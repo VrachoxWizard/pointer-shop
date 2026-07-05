@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { Reveal } from '../components/Reveal';
+import { SectionHeading } from '../components/SectionHeading';
 import { ArrowRight, Flame } from 'lucide-react';
 
 export const Home: React.FC = () => {
@@ -57,15 +58,24 @@ export const Home: React.FC = () => {
               willChange: 'transform'
             }}
           />
-          {/* Subtle overlay styling */}
+          {/* Cinematic overlay with editorial left column */}
           <div className="hero-overlay-mask">
-            <div className="hero-content-box glassmorphism-dark" style={{ padding: '40px', borderRadius: 'var(--radius-lg)' }}>
-              <span className="hero-badge" style={{ letterSpacing: '0.15em' }}>Ekskluzivni Zastupnik</span>
+            <div className="hero-content-box">
+              <span className="hero-badge">Ekskluzivni Zastupnik</span>
               <h1>Leupold Optika</h1>
+              <div className="hero-accent-rule" aria-hidden="true" />
               <p>Istražite vrhunski asortiman najpouzdanijih optičkih nišana na svijetu.</p>
-              <button className="hero-btn-primary">
-                Istraži Ponudu <ArrowRight size={16}/>
-              </button>
+              <div className="hero-cta-row">
+                <button className="hero-btn-primary">
+                  Istraži Ponudu <ArrowRight size={16}/>
+                </button>
+                <button
+                  className="btn-ghost"
+                  onClick={(e) => { e.stopPropagation(); navigate('/contact'); }}
+                >
+                  Kontaktirajte Nas
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -73,7 +83,7 @@ export const Home: React.FC = () => {
 
       {/* Secondary Banner Section (Alaska 1795) */}
       <Reveal delay={0.1}>
-        <section style={{ margin: '40px 0' }} className="container">
+        <section className="container section" style={{ marginTop: 'var(--space-6)' }}>
           <div 
             onClick={() => navigate('/shop?category=odjeca')}
             className="secondary-banner-wrap"
@@ -100,8 +110,8 @@ export const Home: React.FC = () => {
 
       {/* Core Categories Grid */}
       <Reveal delay={0.2}>
-        <section className="container" style={{ marginBottom: '60px' }}>
-          <h2 className="popular-categories-heading">Popularne Kategorije</h2>
+        <section className="container section">
+          <SectionHeading centered eyebrow="Istražite Asortiman" title="Popularne Kategorije" />
           
           {/* Tier 1 Grid */}
           <div className="grid-cols-3" style={{ marginBottom: '24px' }}>
@@ -163,29 +173,14 @@ export const Home: React.FC = () => {
 
       {/* Novo u Ponudi Products */}
       <Reveal delay={0.1}>
-        <section className="container" style={{ marginBottom: '60px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Flame size={24} style={{ color: 'var(--color-accent)' }} /> <span className="text-gradient-copper">NOVO U PONUDI</span>
-            </h2>
-            <button 
-              onClick={() => navigate('/shop')} 
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--color-accent)', 
-                fontWeight: 'bold', 
-                cursor: 'pointer', 
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-              className="hover-accent"
-            >
-              Pregledaj Sve <ArrowRight size={14}/>
-            </button>
-          </div>
+        <section className="container section">
+          <SectionHeading
+            eyebrow="Svježe u Trgovini"
+            title="Novo u Ponudi"
+            icon={<Flame size={22} aria-hidden="true" />}
+            actionLabel="Pregledaj Sve"
+            onAction={() => navigate('/shop')}
+          />
 
           <div className="product-scroll-carousel">
             {newProducts.map(product => (
@@ -197,7 +192,7 @@ export const Home: React.FC = () => {
 
       {/* Brand carousel / logos slider */}
       <Reveal delay={0.1}>
-        <section style={{ backgroundColor: 'var(--color-bg-card)', padding: '40px 0', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)', marginBottom: '60px' }}>
+        <section className="section" style={{ backgroundColor: 'var(--color-bg-card)', padding: '40px 0', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)' }}>
           <div className="container">
             <h3 style={{ fontSize: '14px', textTransform: 'uppercase', textAlign: 'center', letterSpacing: '0.1em', color: 'var(--color-neutral-muted)', marginBottom: '30px', fontWeight: 800 }}>
               POPULARNI BRENDOVI
@@ -231,27 +226,13 @@ export const Home: React.FC = () => {
 
       {/* Novo Streljivo */}
       <Reveal delay={0.1}>
-        <section className="container" style={{ marginBottom: '60px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-            <h2 style={{ fontSize: '24px' }}><span className="text-gradient-copper">NOVO STRELJIVO</span></h2>
-            <button 
-              onClick={() => navigate('/shop?category=streljivo')} 
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--color-accent)', 
-                fontWeight: 'bold', 
-                cursor: 'pointer', 
-                fontSize: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px'
-              }}
-              className="hover-accent"
-            >
-              Pregledaj Sve <ArrowRight size={14}/>
-            </button>
-          </div>
+        <section className="container section">
+          <SectionHeading
+            eyebrow="Kalibri za Svaki Lov"
+            title="Novo Streljivo"
+            actionLabel="Pregledaj Sve"
+            onAction={() => navigate('/shop?category=streljivo')}
+          />
 
           <div className="product-scroll-carousel">
             {ammoProducts.map(product => (

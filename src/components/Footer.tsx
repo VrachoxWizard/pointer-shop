@@ -95,17 +95,19 @@ export const Footer: React.FC = () => {
             <p style={{ fontSize: '13px', lineHeight: '1.6' }}>Prijavite se na naš newsletter i saznajte prvi o akcijama i novom streljivu.</p>
             
             <form action={formAction} className="footer-form-wrapper">
-              <div style={{ display: 'flex', position: 'relative' }}>
+              <div className="footer-input-group">
                 <input 
                   type="email" 
                   name="email"
                   placeholder="Vaša e-mail adresa..." 
+                  aria-label="E-mail adresa za newsletter"
                   required
                   className="footer-email-input"
                 />
                 <button 
                   type="submit" 
                   disabled={isPending}
+                  aria-label="Pretplati se na newsletter"
                   className="footer-submit-btn"
                 >
                   {isPending ? (
@@ -117,9 +119,9 @@ export const Footer: React.FC = () => {
               </div>
 
               {formState && (
-                <p style={{ 
+                <p role="status" style={{ 
                   fontSize: '12px', 
-                  color: formState.success ? 'var(--color-success)' : 'var(--color-error)',
+                  color: formState.success ? 'var(--color-success-light)' : 'var(--color-error-light)',
                   fontWeight: 500,
                   marginTop: '4px'
                 }}>

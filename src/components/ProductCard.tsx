@@ -143,8 +143,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </h3>
 
         {/* Pricing Info */}
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
-          <span className="card-price-display">
+        <div className="card-price-row">
+          <span className={`card-price-display${hasSale ? ' on-sale' : ''}`}>
             €{product.price.toFixed(2)}
           </span>
           {hasSale && (

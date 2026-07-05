@@ -119,7 +119,7 @@
 }
 
 .route-transition {
-  animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ── Shimmer loader ── */
@@ -199,27 +199,55 @@
   color: var(--color-success);
 }
 
-/* ── Buttons ── */
-.btn-primary {
-  background-color: var(--color-accent);
-  color: white;
-  border: none;
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: var(--text-sm);
-  letter-spacing: 0.03em;
-  padding: 12px 24px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
+/* ═══════════════════════════════════════
+   UNIFIED BUTTON SYSTEM
+   Base `.btn` shared by all CTA variants. Legacy class names
+   (.btn-primary, .btn-secondary, .hero-btn-primary,
+   .card-add-to-cart-btn) inherit the base via grouping so
+   existing markup keeps working.
+   ═══════════════════════════════════════ */
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-ghost,
+.hero-btn-primary,
+.card-add-to-cart-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.03em;
+  min-height: var(--btn-height-md);
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+/* Size modifiers */
+.btn-sm {
+  min-height: var(--btn-height-sm);
+  padding: 6px 16px;
+  font-size: 12.5px;
+}
+
+.btn-lg {
+  min-height: var(--btn-height-lg);
+  padding: 14px 32px;
+  font-size: var(--text-base);
+}
+
+.btn-primary {
+  background: var(--gradient-accent);
+  color: white;
+  border: none;
   position: relative;
   overflow: hidden;
   z-index: 1;
   box-shadow: 0 4px 12px rgba(224, 108, 0, 0.25);
-  transition: all var(--transition-normal);
 }
 
 .btn-primary::after {
@@ -238,7 +266,7 @@
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(224, 108, 0, 0.4);
+  box-shadow: var(--shadow-lift), 0 6px 20px rgba(224, 108, 0, 0.35);
 }
 
 .btn-primary:hover::after {
@@ -251,7 +279,8 @@
 }
 
 .btn-primary:disabled {
-  background-color: var(--color-neutral-border);
+  /* `background` (not background-color) so it overrides the gradient image */
+  background: var(--color-neutral-border);
   color: var(--color-neutral-muted);
   cursor: not-allowed;
   transform: none;
@@ -266,18 +295,7 @@
   background-color: transparent;
   color: var(--color-primary);
   border: 1.5px solid var(--color-primary);
-  font-family: var(--font-heading);
-  font-weight: 600;
-  font-size: var(--text-sm);
-  letter-spacing: 0.03em;
   padding: 10px 22px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all var(--transition-normal);
 }
 
 .btn-secondary:hover {
@@ -288,6 +306,25 @@
 }
 
 .btn-secondary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* Ghost variant — for use over imagery (hero, banners) */
+.btn-ghost {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.btn-ghost:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  border-color: white;
+  transform: translateY(-2px);
+}
+
+.btn-ghost:active {
   transform: translateY(0) scale(0.97);
 }
 
@@ -421,6 +458,27 @@ input[type="range"]::-webkit-slider-thumb:hover {
   background-image: radial-gradient(circle at top right, rgba(255,255,255,0.05) 0%, transparent 40%),
                     radial-gradient(circle at bottom left, rgba(242,110,0,0.15) 0%, transparent 50%);
   pointer-events: none;
+}
+
+/* ── Section Rhythm ── */
+.section {
+  margin-bottom: var(--space-7);
+}
+
+/* ── Reduced Motion (Accessibility) ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .brand-marquee-track {
+    animation: none;
+  }
 }
 
 /* ── Responsive Grid ── */

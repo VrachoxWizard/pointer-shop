@@ -14,13 +14,21 @@
   --color-accent-light: #FFA142;
   --color-accent-hover: #E06C00;
 
+  /* ── Accent Gradient (primary CTA fill) ── */
+  --gradient-accent: linear-gradient(135deg, #FF8A1E 0%, #FF7A00 55%, #E06C00 100%);
+
   /* ── Neutral Palette ── */
   --color-neutral-dark: #0A0C06;
   --color-neutral-slate: #4A5240;
-  --color-neutral-muted: #7A8470;
+  --color-neutral-muted: #68715F; /* darkened from #7A8470 for WCAG AA (4.5:1+) on white */
   --color-neutral-border: #E5E8E0;
   --color-neutral-light: #FDFCF9;
   --color-bg-card: #FFFFFF;
+
+  /* ── Surface Elevation ── */
+  --surface-1: #FFFFFF;
+  --surface-2: #F7F6F1;
+  --surface-3: #EFEEE7;
 
   /* ── Semantic Aliases ── */
   --color-text-light: #FAF8F5;
@@ -55,6 +63,11 @@
   --shadow-md: 0 8px 24px rgba(10, 12, 6, 0.08);
   --shadow-lg: 0 20px 48px rgba(10, 12, 6, 0.12);
   --shadow-premium: 0 24px 48px -12px rgba(27, 33, 16, 0.15);
+  /* Layered lift shadow for hover states on cards/CTAs */
+  --shadow-lift: 0 1px 2px rgba(10, 12, 6, 0.05), 0 8px 16px -4px rgba(10, 12, 6, 0.1), 0 24px 40px -8px rgba(27, 33, 16, 0.14);
+
+  /* ── Focus Ring ── */
+  --ring: 0 0 0 2px var(--color-bg-site), 0 0 0 4px var(--color-accent);
 
   /* ── Border Radius ── */
   --radius-sm: 6px;
@@ -69,11 +82,18 @@
   /* ── Typography Scale ── */
   --text-xs: 11px;
   --text-sm: 13px;
-  --text-base: 14px;
+  --text-base: 15px;
   --text-md: 16px;
   --text-lg: 18px;
   --text-xl: 24px;
   --text-2xl: 32px;
+  /* Fluid display sizes for heroes and page titles */
+  --text-3xl: clamp(2.5rem, 1.8rem + 3vw, 3.5rem);
+  --text-4xl: clamp(3rem, 2rem + 4.5vw, 4.5rem);
+
+  /* ── Letter Spacing ── */
+  --tracking-tight: -0.02em;
+  --tracking-wide: 0.12em;
 
   /* ── Spacing Scale (Standardized 8px base) ── */
   --space-1: 0.25rem;  /* 4px */
@@ -82,6 +102,7 @@
   --space-4: 1.5rem;   /* 24px */
   --space-5: 2rem;     /* 32px */
   --space-6: 3rem;     /* 48px */
+  --space-7: 5rem;     /* 80px — section rhythm */
   --space-8: 4rem;     /* 64px */
   
   --space-xs: var(--space-1);
@@ -125,11 +146,17 @@
 
   --color-neutral-dark: #FAF8F5;
   --color-neutral-slate: #C4C9BD;
-  --color-neutral-muted: #838C7A;
+  --color-neutral-muted: #98A18D; /* lightened for AA contrast on dark surfaces */
   --color-neutral-border: #2D3325;
   --color-neutral-light: #0F110C;
   --color-bg-card: #171B12;
   --color-border: #2D3325;
+
+  --surface-1: #171B12;
+  --surface-2: #1E2418;
+  --surface-3: #262D1F;
+
+  --gradient-accent: linear-gradient(135deg, #FFB35C 0%, #FFA142 55%, #F26E00 100%);
 
   --color-success: #81C784;
   --color-success-light: #A5D6A7;
@@ -149,6 +176,7 @@
   --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.5);
   --shadow-premium: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+  --shadow-lift: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 16px -4px rgba(0, 0, 0, 0.45), 0 24px 40px -8px rgba(0, 0, 0, 0.55);
 
   background-color: var(--color-neutral-light);
   color: var(--color-neutral-dark);
@@ -193,10 +221,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: var(--text-4xl);
   font-weight: 800;
   line-height: 1.1;
-  letter-spacing: -0.02em;
+  letter-spacing: var(--tracking-tight);
 }
 
 h2 {
@@ -224,9 +252,8 @@ a {
 /* ── Focus Visible (Accessibility) ── */
 :focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
+  outline-offset: 2px;
   border-radius: var(--radius-sm);
-  transition: outline-offset var(--transition-fast);
 }
 
 button:focus-visible,
@@ -235,9 +262,8 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
+  outline-offset: 2px;
   border-radius: var(--radius-sm);
-  transition: outline-offset var(--transition-fast);
 }
 
 /* ── Custom Scrollbars ── */

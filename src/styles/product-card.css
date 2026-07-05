@@ -18,7 +18,7 @@
 
 .product-card-wrap:hover {
   border-color: var(--color-accent);
-  box-shadow: var(--shadow-premium);
+  box-shadow: var(--shadow-lift);
 }
 
 .card-badges-container {
@@ -128,10 +128,31 @@
   color: var(--color-accent);
 }
 
+/* Price row — hairline divider separates price from title block */
+.card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-neutral-border);
+}
+
 .card-price-display {
+  font-family: var(--font-heading);
   font-size: var(--text-lg);
   font-weight: 800;
   color: var(--color-neutral-dark);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* Sale price stands out in accent copper */
+.card-price-display.on-sale {
+  color: var(--color-accent-hover);
+}
+
+[data-theme="dark"] .card-price-display.on-sale {
+  color: var(--color-accent-light);
 }
 
 .card-price-original {

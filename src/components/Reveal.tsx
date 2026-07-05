@@ -11,7 +11,7 @@ export const Reveal: React.FC<RevealProps> = ({
   children, 
   delay = 0, 
   direction = 'up',
-  duration = 0.6 
+  duration = 0.5 
 }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
