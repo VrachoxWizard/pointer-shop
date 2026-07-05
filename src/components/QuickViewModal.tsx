@@ -74,6 +74,10 @@ export const QuickViewModal: React.FC = () => {
                 transition: isZoomed ? 'none' : 'transform 0.35s ease'
               }}
             />
+            {/* Gallery Zoom Hint */}
+            <div className="gallery-zoom-badge">
+              <span style={{ display: 'inline-flex', alignItems: 'center' }}>🔍</span> Pređite mišem za zumiranje
+            </div>
           </div>
 
           {quickViewProduct.images.length > 1 && (
@@ -85,12 +89,14 @@ export const QuickViewModal: React.FC = () => {
                   style={{
                     width: '60px',
                     height: '60px',
-                    border: index === selectedImageIndex ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                    border: index === selectedImageIndex ? '2px solid var(--color-accent)' : '1px solid var(--color-neutral-border)',
                     borderRadius: 'var(--radius-sm)',
                     overflow: 'hidden',
                     background: 'white',
                     padding: '2px',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    boxShadow: index === selectedImageIndex ? 'var(--shadow-sm)' : 'none',
+                    transition: 'all var(--transition-fast)'
                   }}
                 >
                   <img src={img} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
@@ -103,47 +109,56 @@ export const QuickViewModal: React.FC = () => {
         {/* Right: Info Column */}
         <div className="modal-info-col">
           
-          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '4px' }}>
+          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-neutral-muted)', fontWeight: 800, letterSpacing: '0.07em', marginBottom: '4px', display: 'block' }}>
             {quickViewProduct.brand}
           </span>
           
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--color-neutral-dark)', lineHeight: '1.3', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--color-neutral-dark)', lineHeight: '1.25', marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>
             {quickViewProduct.name}
           </h2>
 
+          {/* Social Proof Star Rating */}
+          <div className="premium-rating-container">
+            <div className="premium-stars">
+              {[...Array(5)].map((_, i) => (
+                <span key={i} style={{ fontSize: '14px' }}>★</span>
+              ))}
+            </div>
+            <span className="premium-rating-text">4.8 (42 recenzije)</span>
+          </div>
+
           {/* Price details */}
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginBottom: '16px' }}>
-            <span style={{ fontSize: '24px', fontWeight: 800, color: 'var(--color-primary)' }}>
-              €{quickViewProduct.price.toFixed(2)}
-            </span>
-            {hasSale && (
-              <span style={{ fontSize: '15px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>
-                €{quickViewProduct.originalPrice?.toFixed(2)}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', borderBottom: '1px solid var(--color-border)', paddingBottom: '16px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+              <span style={{ fontSize: '26px', fontWeight: 800, color: 'var(--color-primary)' }}>
+                €{quickViewProduct.price.toFixed(2)}
               </span>
-            )}
+              {hasSale && (
+                <span style={{ fontSize: '15px', color: 'var(--color-neutral-muted)', textDecoration: 'line-through' }}>
+                  €{quickViewProduct.originalPrice?.toFixed(2)}
+                </span>
+              )}
+            </div>
             
             {quickViewProduct.stockStatus === 'instock' ? (
-              <span style={{ fontSize: '12px', color: '#2F5935', backgroundColor: '#E1EBE2', padding: '3px 8px', borderRadius: '4px', marginLeft: 'auto', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}><Check size={12}/> Dostupno</span>
+              <span className="badge-premium-status instock" style={{ marginLeft: 'auto' }}>Dostupno</span>
             ) : (
-              <span style={{ fontSize: '12px', color: '#5D5230', backgroundColor: '#E2D3A1', padding: '3px 8px', borderRadius: '4px', marginLeft: 'auto', fontWeight: 600 }}>Po narudžbi</span>
+              <span className="badge-premium-status outofstock" style={{ marginLeft: 'auto' }}>Po narudžbi</span>
             )}
           </div>
 
-          <p style={{ fontSize: '14px', color: 'var(--color-text-muted)', lineHeight: '1.6', marginBottom: '20px' }}>
+          <p style={{ fontSize: '14px', color: 'var(--color-neutral-slate)', lineHeight: '1.6', marginBottom: '20px' }}>
             {quickViewProduct.description}
           </p>
 
-          {/* Spec details grid */}
-          <div style={{ backgroundColor: 'var(--color-bg-site)', padding: '12px 16px', borderRadius: 'var(--radius-md)', marginBottom: '24px', border: '1px solid var(--color-border)' }}>
-            <h4 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-neutral-dark)', marginBottom: '8px', fontWeight: 700 }}>Specifikacije</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13px' }}>
-              {Object.entries(quickViewProduct.specifications).slice(0, 4).map(([key, value]) => (
-                <div key={key} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--color-text-muted)' }}>{key}:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--color-neutral-dark)' }}>{value}</span>
-                </div>
-              ))}
-            </div>
+          {/* Specs details grid */}
+          <div className="specs-premium-grid">
+            {Object.entries(quickViewProduct.specifications).slice(0, 4).map(([key, value]) => (
+              <div key={key} className="spec-premium-card">
+                <span className="spec-premium-label">{key}</span>
+                <span className="spec-premium-value">{value}</span>
+              </div>
+            ))}
           </div>
 
           {quickViewProduct.specNotice && (
@@ -155,14 +170,14 @@ export const QuickViewModal: React.FC = () => {
             <div style={{ marginTop: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
               
               {/* Quantity Selector */}
-              <div className="detail-qty-wrapper">
+              <div className="qty-stepper-premium">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   aria-label="Smanji količinu"
                 >
                   -
                 </button>
-                <div className="qty-display">
+                <div className="qty-val">
                   {quantity}
                 </div>
                 <button 
@@ -177,15 +192,15 @@ export const QuickViewModal: React.FC = () => {
               <button 
                 onClick={handleAddToCart}
                 disabled={isAdding}
-                className="btn-primary"
-                style={{ flexGrow: 1, height: '48px' }}
+                className="btn-cart-premium"
+                style={{ flexGrow: 1 }}
               >
                 {isAdding ? (
                   'Dodavanje...'
                 ) : (
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <>
                     <ShoppingBag size={18} /> Dodaj u košaricu
-                  </span>
+                  </>
                 )}
               </button>
 
@@ -193,18 +208,7 @@ export const QuickViewModal: React.FC = () => {
               <button
                 onClick={() => toggleWishlist(quickViewProduct.id)}
                 aria-label="Popis želja"
-                style={{
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-sm)',
-                  height: '48px',
-                  width: '48px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  background: 'white',
-                  color: 'var(--color-primary)'
-                }}
+                className={`btn-wishlist-premium ${isFavorited ? 'favorited' : ''}`}
               >
                 <Heart size={20} fill={isFavorited ? 'var(--color-accent)' : 'none'} stroke={isFavorited ? 'var(--color-accent)' : 'currentColor'} />
               </button>

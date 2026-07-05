@@ -85,7 +85,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image Gallery Wrap */}
       <div 
         className="card-image-gallery-wrapper"
-        onClick={() => openQuickView(product)}
+        onClick={() => window.location.hash = `#/product/${product.id}`}
+        style={{ cursor: 'pointer' }}
       >
         <img 
           src={hovered ? hoverImage : primaryImage} 
@@ -95,8 +96,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         
         {/* Quick View Hover Button */}
         {hovered && (
-          <div 
+          <button 
+            type="button"
             className="animate-fade-in"
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent navigating to detail page
+              openQuickView(product);
+            }}
             style={{
               position: 'absolute',
               bottom: '12px',
@@ -113,11 +119,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               gap: '6px',
               boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
               transform: 'translateY(0)',
-              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              zIndex: 10
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-primary-light)';
+              e.currentTarget.style.transform = 'scale(1.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--glass-bg-dark)';
+              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
             <Eye size={14} /> Brzi Pregled
-          </div>
+          </button>
         )}
       </div>
 
@@ -128,8 +144,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </span>
         
         <h3 
-          onClick={() => openQuickView(product)}
+          onClick={() => window.location.hash = `#/product/${product.id}`}
           className="card-title-heading"
+          style={{ cursor: 'pointer' }}
         >
           {product.name}
         </h3>
