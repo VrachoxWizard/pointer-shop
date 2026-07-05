@@ -12,7 +12,7 @@ interface ShopProps {
 }
 
 export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory, initialSearch }) => {
-  const { products } = useShop();
+  const { products, addToCart, openQuickView } = useShop();
   
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
   const [selectedSubCategory, setSelectedSubCategory] = useState<string>(initialSubCategory || 'all');
@@ -88,22 +88,16 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
       <meta name="description" content="Pregledajte kompletan asortiman oružja, karabina, pištolja i lovačkog streljiva po najpovoljnijim cijenama." />
 
       {/* Breadcrumb Header */}
-      <div style={{ marginBottom: '24px', fontSize: '13px', color: 'var(--color-text-muted)', fontWeight: 500 }}>
+      <div style={{ marginBottom: '24px', fontSize: '13px', color: 'var(--color-neutral-muted)', fontWeight: 500 }}>
         Home / Trgovina {activeCategoryObject && `/ ${activeCategoryObject.name}`} {selectedSubCategory !== 'all' && `/ ${selectedSubCategory}`}
       </div>
 
-      <div style={{ display: 'flex', gap: '30px', position: 'relative' }}>
+      <div className="shop-page-layout">
         
         {/* Sidebar Filters */}
-        <aside 
-          className={`shop-sidebar ${showFilters ? 'mobile-visible' : ''}`}
-          style={{
-            width: '260px',
-            flexShrink: 0
-          }}
-        >
+        <aside className={`shop-sidebar-aside ${showFilters ? 'mobile-visible' : ''}`}>
           {/* Categories Tree */}
-          <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '20px', marginBottom: '24px' }}>
+          <div className="sidebar-filter-card" style={{ marginBottom: '24px' }}>
             <h3 style={{ fontSize: '15px', textTransform: 'uppercase', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '16px', fontWeight: 800 }}>
               Kategorije
             </h3>
@@ -112,7 +106,7 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                 onClick={() => { setSelectedCategory('all'); setSelectedSubCategory('all'); }}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
-                  color: selectedCategory === 'all' ? 'var(--color-accent)' : 'var(--color-text-main)',
+                  color: selectedCategory === 'all' ? 'var(--color-accent)' : 'var(--color-neutral-dark)',
                   fontWeight: selectedCategory === 'all' ? 'bold' : 500
                 }}
               >
@@ -126,7 +120,7 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                       onClick={() => { setSelectedCategory(cat.id); setSelectedSubCategory('all'); }}
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
-                        color: selectedCategory === cat.id ? 'var(--color-accent)' : 'var(--color-text-main)',
+                        color: selectedCategory === cat.id ? 'var(--color-accent)' : 'var(--color-neutral-dark)',
                         fontWeight: selectedCategory === cat.id ? 'bold' : 500,
                         padding: '2px 0'
                       }}
@@ -145,7 +139,7 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                               onClick={() => setSelectedSubCategory(sub)}
                               style={{
                                 background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
-                                color: selectedSubCategory === sub ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                                color: selectedSubCategory === sub ? 'var(--color-accent)' : 'var(--color-neutral-muted)',
                                 fontWeight: selectedSubCategory === sub ? 'bold' : 500,
                                 padding: '2px 0'
                               }}
@@ -163,11 +157,11 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
           </div>
 
           {/* Price Range Filter */}
-          <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '20px' }}>
+          <div className="sidebar-filter-card">
             <h3 style={{ fontSize: '15px', textTransform: 'uppercase', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '16px', fontWeight: 800 }}>
               Maksimalna Cijena
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div className="max-price-range-filter">
               <input 
                 type="range" 
                 min="0" 
@@ -175,7 +169,6 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                 step="50"
                 value={priceRange} 
                 onChange={(e) => setPriceRange(Number(e.target.value))}
-                style={{ width: '100%', accentColor: 'var(--color-primary)' }}
               />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: 600 }}>
                 <span>€0</span>
@@ -187,23 +180,10 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
         </aside>
 
         {/* Product Listing Main View */}
-        <div style={{ flexGrow: 1 }}>
+        <div className="shop-main-catalog">
           
           {/* Toolbar Controls */}
-          <div 
-            style={{ 
-              backgroundColor: 'white', 
-              border: '1px solid var(--color-border)', 
-              borderRadius: 'var(--radius-md)', 
-              padding: '12px 20px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'space-between',
-              marginBottom: '24px',
-              flexWrap: 'wrap',
-              gap: '12px'
-            }}
-          >
+          <div className="catalog-toolbar-panel">
             {/* Left toolbar details */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <button 
@@ -226,33 +206,25 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                 <SlidersHorizontal size={14}/> Filteri
               </button>
               
-              <span style={{ fontSize: '14px', color: 'var(--color-text-muted)', fontWeight: 500 }}>
+              <span style={{ fontSize: '14px', color: 'var(--color-neutral-muted)', fontWeight: 500 }}>
                 Pronađeno: <strong>{sortedProducts.length}</strong> proizvoda
               </span>
             </div>
 
             {/* Filter Search inside catalog */}
-            <div style={{ display: 'flex', alignItems: 'center', position: 'relative', width: '220px' }} className="catalog-search">
+            <div className="catalog-search-wrapper">
               <input 
                 type="text" 
                 placeholder="Pretraži rezultate..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '6px 32px 6px 12px',
-                  fontSize: '13px',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '4px',
-                  outline: 'none'
-                }}
               />
-              <Search size={14} style={{ position: 'absolute', right: '10px', color: 'var(--color-text-muted)' }} />
+              <Search size={14} style={{ position: 'absolute', right: '10px', color: 'var(--color-neutral-muted)' }} />
             </div>
 
             {/* Sorting choices dropdown */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>Poredaj po:</span>
+              <span style={{ fontSize: '13px', color: 'var(--color-neutral-muted)' }}>Poredaj po:</span>
               <select 
                 value={sortBy} 
                 onChange={(e) => setSortBy(e.target.value)}
@@ -260,7 +232,8 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                   padding: '6px 12px',
                   border: '1px solid var(--color-border)',
                   borderRadius: '4px',
-                  backgroundColor: 'white',
+                  backgroundColor: 'var(--color-bg-card)',
+                  color: 'var(--color-neutral-dark)',
                   fontSize: '13px',
                   cursor: 'pointer',
                   outline: 'none'
@@ -277,27 +250,13 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
               <div style={{ display: 'flex', border: '1px solid var(--color-border)', borderRadius: '4px', overflow: 'hidden', marginLeft: '8px' }}>
                 <button 
                   onClick={() => setViewMode('grid')}
-                  style={{
-                    padding: '6px',
-                    background: viewMode === 'grid' ? 'var(--color-primary)' : 'white',
-                    color: viewMode === 'grid' ? 'white' : 'var(--color-primary)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex'
-                  }}
+                  className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}
                 >
                   <Grid size={16}/>
                 </button>
                 <button 
                   onClick={() => setViewMode('list')}
-                  style={{
-                    padding: '6px',
-                    background: viewMode === 'list' ? 'var(--color-primary)' : 'white',
-                    color: viewMode === 'list' ? 'white' : 'var(--color-primary)',
-                    border: 'none',
-                    cursor: 'pointer',
-                    display: 'flex'
-                  }}
+                  className={`view-mode-button ${viewMode === 'list' ? 'active' : ''}`}
                 >
                   <List size={16}/>
                 </button>
@@ -322,10 +281,10 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
             </div>
           )}
 
-          {/* Main Products Grid */}
+          {/* Main Products Listing */}
           {sortedProducts.length === 0 ? (
-            <div style={{ backgroundColor: 'white', borderRadius: 'var(--radius-md)', padding: '60px 20px', textAlign: 'center', border: '1px solid var(--color-border)' }}>
-              <p style={{ fontSize: '16px', color: 'var(--color-text-muted)', marginBottom: '16px' }}>Nema pronađenih proizvoda koji odgovaraju odabranim kriterijima.</p>
+            <div className="no-results-panel">
+              <p style={{ fontSize: '16px', color: 'var(--color-neutral-muted)', marginBottom: '16px' }}>Nema pronađenih proizvoda koji odgovaraju odabranim kriterijima.</p>
               <button 
                 onClick={() => { setSelectedCategory('all'); setSelectedSubCategory('all'); setSearchQuery(''); setPriceRange(5000); }} 
                 className="btn-primary"
@@ -333,44 +292,35 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                 Poništi sve filtere
               </button>
             </div>
-          ) : viewMode === 'grid' ? (
-            <Reveal delay={0.1}>
-              <div className="grid-cols-3">
-                {sortedProducts.map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
-              </div>
-            </Reveal>
           ) : (
-            /* List Layout */
             <Reveal delay={0.1}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <div className={`shop-products-grid view-${viewMode}`}>
                 {sortedProducts.map(product => (
-                  <div 
-                    key={product.id}
-                    style={{
-                      backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', gap: '20px'
-                    }}
-                  >
-                    <div style={{ width: '120px', height: '120px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <img src={product.images[0]} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                    </div>
-                    <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                      <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>{product.brand}</span>
-                      <h3 style={{ fontSize: '16px', color: 'var(--color-text-main)', margin: '4px 0 8px' }}>{product.name}</h3>
-                      <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '12px' }}>{product.description}</p>
-                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
-                        <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-primary)' }}>€{product.price.toFixed(2)}</span>
-                        {product.originalPrice && (
-                          <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>€{product.originalPrice.toFixed(2)}</span>
-                        )}
+                  viewMode === 'grid' ? (
+                    <ProductCard key={product.id} product={product} />
+                  ) : (
+                    /* List Layout Item */
+                    <div key={product.id} className="shop-list-item">
+                      <div className="shop-list-item-image">
+                        <img src={product.images[0]} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                      </div>
+                      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-neutral-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>{product.brand}</span>
+                        <h3 style={{ fontSize: '16px', color: 'var(--color-neutral-dark)', margin: '4px 0 8px' }}>{product.name}</h3>
+                        <p style={{ fontSize: '13px', color: 'var(--color-neutral-muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '12px' }}>{product.description}</p>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
+                          <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-primary)' }}>€{product.price.toFixed(2)}</span>
+                          {product.originalPrice && (
+                            <span style={{ fontSize: '12px', color: 'var(--color-neutral-muted)', textDecoration: 'line-through' }}>€{product.originalPrice.toFixed(2)}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px' }}>
+                        <button onClick={() => addToCart(product.id, 1)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', whiteSpace: 'nowrap' }}>Dodaj u košaricu</button>
+                        <button onClick={() => openQuickView(product)} className="btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', border: '1px solid var(--color-primary)', whiteSpace: 'nowrap' }}>Brzi pregled</button>
                       </div>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px' }}>
-                      <button onClick={() => useShop().addToCart(product.id, 1)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', whiteSpace: 'nowrap' }}>Dodaj u košaricu</button>
-                      <button onClick={() => useShop().openQuickView(product)} className="btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', border: '1px solid var(--color-primary)', whiteSpace: 'nowrap' }}>Brzi pregled</button>
-                    </div>
-                  </div>
+                  )
                 ))}
               </div>
             </Reveal>
@@ -382,10 +332,10 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
 
       <style>{`
         @media (max-width: 900px) {
-          .shop-sidebar {
+          .shop-sidebar-aside {
             display: none !important;
           }
-          .shop-sidebar.mobile-visible {
+          .shop-sidebar-aside.mobile-visible {
             display: block !important;
             position: fixed;
             top: 110px;
@@ -402,7 +352,7 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
           }
         }
         @media (max-width: 580px) {
-          .catalog-search {
+          .catalog-search-wrapper {
             width: 100% !important;
             order: 3;
           }

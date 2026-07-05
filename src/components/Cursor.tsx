@@ -1,21 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 export const Cursor: React.FC = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPointer, setIsPointer] = useState(false);
   const [isHidden, setIsHidden] = useState(true);
+  
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Only show custom cursor on non-touch devices
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const onMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      if (isHidden) setIsHidden(false);
+      const x = e.clientX;
+      const y = e.clientY;
+      if (outerRef.current) {
+        outerRef.current.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
+      }
+      if (innerRef.current) {
+        innerRef.current.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
+      }
+      // Reveal cursor on first move if hidden
+      setIsHidden(false);
     };
 
     const onMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
+      if (!target) return;
+      
       // Check if hovering over clickable elements
       if (
         window.getComputedStyle(target).cursor === 'pointer' ||
@@ -44,45 +56,34 @@ export const Cursor: React.FC = () => {
       document.removeEventListener('mouseleave', onMouseLeave);
       document.removeEventListener('mouseenter', onMouseEnter);
     };
-  }, [isHidden]);
+  }, []);
 
-  if (isHidden || window.matchMedia('(pointer: coarse)').matches) return null;
+  if (window.matchMedia('(pointer: coarse)').matches) return null;
 
   return (
     <>
       {/* Outer Ring */}
       <div
+        ref={outerRef}
+        className="custom-cursor-outer"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
           width: isPointer ? '48px' : '32px',
           height: isPointer ? '48px' : '32px',
-          border: '1px solid var(--color-primary)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`,
-          transition: 'width 0.2s ease, height 0.2s ease, background-color 0.2s ease',
-          zIndex: 999999,
-          mixBlendMode: 'difference',
+          transition: 'width 0.2s ease, height 0.2s ease, background-color 0.2s ease, opacity 0.25s ease',
           backgroundColor: isPointer ? 'rgba(250, 249, 246, 0.1)' : 'transparent',
-          backdropFilter: isPointer ? 'blur(2px)' : 'none'
+          backdropFilter: isPointer ? 'blur(2px)' : 'none',
+          opacity: isHidden ? 0 : 1
         }}
       />
       {/* Inner Dot */}
       <div
+        ref={innerRef}
+        className="custom-cursor-inner"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
           width: '6px',
           height: '6px',
-          backgroundColor: 'var(--color-accent)',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          transform: `translate(calc(${position.x}px - 50%), calc(${position.y}px - 50%))`,
-          zIndex: 999999,
-          mixBlendMode: 'difference'
+          opacity: isHidden ? 0 : 1,
+          transition: 'opacity 0.25s ease'
         }}
       />
     </>

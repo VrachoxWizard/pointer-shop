@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
   const [formState, formAction, isPending] = useActionState(subscribeAction, null);
 
   return (
-    <footer className="footer-classic" style={{ backgroundColor: '#1A1D15', color: '#B3B8AD', padding: '60px 0 20px', borderTop: '4px solid var(--color-primary)' }}>
+    <footer className="footer-classic footer-classic-container">
       <div className="container">
         
         {/* Footer Top Grid */}
@@ -43,37 +43,51 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           
           {/* About Section */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ color: 'white', fontSize: '18px', fontFamily: 'var(--font-heading)' }}>POINTER TRGOVINA</h3>
+            <h3 className="footer-logo-title">POINTER TRGOVINA</h3>
             <p style={{ fontSize: '14px', lineHeight: '1.7' }}>
               Specijalizirana trgovina oružjem, streljivom, optikom i vrhunskom lovačkom opremom. Vaš pouzdani partner za sigurnost i uspješan lov.
             </p>
-            <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+            <div className="footer-payment-tags">
               {/* Payment brand badges */}
-              <span style={{ fontSize: '11px', backgroundColor: '#2E3227', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', color: 'white' }}>VISA</span>
-              <span style={{ fontSize: '11px', backgroundColor: '#2E3227', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', color: 'white' }}>MC</span>
-              <span style={{ fontSize: '11px', backgroundColor: '#2E3227', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', color: 'white' }}>MAESTRO</span>
-              <span style={{ fontSize: '11px', backgroundColor: '#2E3227', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', color: 'white' }}>KEKS</span>
+              <span>VISA</span>
+              <span>MC</span>
+              <span>MAESTRO</span>
+              <span>KEKS</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <h4 style={{ color: 'white', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Korisne Poveznice</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
-              <li><button onClick={() => onNavigate('home')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Početna</button></li>
-              <li><button onClick={() => onNavigate('shop')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Katalog Proizvoda</button></li>
-              <li><button onClick={() => onNavigate('about-us')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>O Nama</button></li>
-              <li><button onClick={() => onNavigate('contact')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Kontaktirajte Nas</button></li>
+            <ul className="footer-links-list">
+              <li>
+                <button onClick={() => onNavigate('home')}>Početna</button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('shop')}>Katalog Proizvoda</button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('about-us')}>O Nama</button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('contact')}>Kontaktirajte Nas</button>
+              </li>
             </ul>
           </div>
 
           {/* Legal Pages */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
             <h4 style={{ color: 'white', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Informacije</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
-              <li><button onClick={() => onNavigate('privacy-policy')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Pravila Privatnosti</button></li>
-              <li><button onClick={() => onNavigate('shop')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Uvjeti Korištenja</button></li>
-              <li><button onClick={() => onNavigate('contact')} style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', textAlign: 'left' }} onMouseEnter={(e)=>e.currentTarget.style.color='white'} onMouseLeave={(e)=>e.currentTarget.style.color='inherit'}>Dostava i Povrati</button></li>
+            <ul className="footer-links-list">
+              <li>
+                <button onClick={() => onNavigate('privacy-policy')}>Pravila Privatnosti</button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('shop')}>Uvjeti Korištenja</button>
+              </li>
+              <li>
+                <button onClick={() => onNavigate('contact')}>Dostava i Povrati</button>
+              </li>
             </ul>
           </div>
 
@@ -82,13 +96,14 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 style={{ color: 'white', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pretplatite Se</h4>
             <p style={{ fontSize: '13px', lineHeight: '1.6' }}>Prijavite se na naš newsletter i saznajte prvi o akcijama i novom streljivu.</p>
             
-            <form action={formAction} style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+            <form action={formAction} className="footer-form-wrapper">
               <div style={{ display: 'flex', position: 'relative' }}>
                 <input 
                   type="email" 
                   name="email"
                   placeholder="Vaša e-mail adresa..." 
                   required
+                  className="footer-email-input"
                   style={{
                     width: '100%',
                     padding: '10px 40px 10px 12px',
@@ -144,7 +159,19 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Footer Middle (Address Details) */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', padding: '24px 0', borderTop: '1px solid #2E3227', borderBottom: '1px solid #2E3227', fontSize: '13px', justifyContent: 'center' }}>
+        <div 
+          className="footer-address-bar"
+          style={{ 
+            display: 'flex', 
+            flexWrap: 'wrap', 
+            gap: '24px', 
+            padding: '24px 0', 
+            borderTop: '1px solid #2E3227', 
+            borderBottom: '1px solid #2E3227', 
+            fontSize: '13px', 
+            justifyContent: 'center' 
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <MapPin size={16} style={{ color: 'var(--color-accent)' }} />
             <span>Koledinečka ulica 1a, 10000 Zagreb, Hrvatska</span>
@@ -160,9 +187,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Footer Bottom (Copyrights) */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0 0', fontSize: '12px', color: '#6A7062' }}>
-          <p>© {new Date().getFullYear()} POINTER Trgovina d.o.o. Sva prava pridržana.</p>
-          <p>Izrada: Antigravity React Migration App</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0 0', fontSize: '12px' }}>
+          <p className="footer-bottom-text">© {new Date().getFullYear()} POINTER Trgovina d.o.o. Sva prava pridržana.</p>
+          <p className="footer-bottom-text">Izrada: Antigravity React Migration App</p>
         </div>
 
       </div>

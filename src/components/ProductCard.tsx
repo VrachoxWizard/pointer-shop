@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Product } from '../data/products';
 import { useShop } from '../context/ShopContext';
 import { Heart, Eye, ShoppingCart } from 'lucide-react';
@@ -11,18 +11,28 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, wishlist, toggleWishlist, openQuickView } = useShop();
   const [hovered, setHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
     const x = (e.clientX - left - width / 2) / 20;
     const y = (e.clientY - top - height / 2) / 20;
-    setTilt({ x: -y, y: x });
+    
+    // Direct DOM manipulation of transform for optimal performance
+    cardRef.current.style.transition = 'transform 0.08s ease-out';
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.02)`;
+    cardRef.current.style.zIndex = '2';
   };
 
   const handleMouseLeave = () => {
     setHovered(false);
-    setTilt({ x: 0, y: 0 });
+    if (cardRef.current) {
+      cardRef.current.style.transition = 'transform 0.4s ease-out';
+      cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+      cardRef.current.style.zIndex = '1';
+    }
   };
 
   const isFavorited = wishlist.includes(product.id);
@@ -35,32 +45,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setIsAdding(false);
   };
 
-  // Double-image resolution
   const primaryImage = product.images[0];
   const hoverImage = product.images.length > 1 ? product.images[1] : product.images[0];
 
   return (
     <div 
-      className="product-card animate-fade-in"
+      ref={cardRef}
+      className="product-card-wrap animate-fade-in"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
-      style={{
-        backgroundColor: 'var(--color-bg-card)',
-        borderRadius: 'var(--radius-md)',
-        padding: '16px',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${hovered ? 1.02 : 1})`,
-        transition: hovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease-out',
-        transformStyle: 'preserve-3d',
-        zIndex: hovered ? 2 : 1
-      }}
     >
       {/* Badges Overlay */}
-      <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div className="card-badges-container">
         {product.isNew && (
           <span className="badge badge-new animated-badge">Novo</span>
         )}
@@ -76,25 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       <button
         onClick={() => toggleWishlist(product.id)}
         aria-label={isFavorited ? "Ukloni iz popisa želja" : "Dodaj u popis želja"}
-        style={{
-          position: 'absolute',
-          top: '16px',
-          right: '16px',
-          zIndex: 10,
-          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-          border: 'none',
-          borderRadius: '50%',
-          width: '36px',
-          height: '36px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-          transition: 'var(--transition-fast)'
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.transform = 'scale(1.1)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.9)'; e.currentTarget.style.transform = 'none'; }}
+        className="card-wishlist-btn"
       >
         <Heart 
           size={18} 
@@ -105,30 +84,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       {/* Image Gallery Wrap */}
       <div 
-        style={{ 
-          height: '200px', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: 'var(--radius-sm)',
-          marginBottom: '16px',
-          cursor: 'pointer'
-        }}
+        className="card-image-gallery-wrapper"
         onClick={() => openQuickView(product)}
       >
         <img 
           src={hovered ? hoverImage : primaryImage} 
           alt={product.name}
           loading="lazy"
-          style={{
-            maxHeight: '100%',
-            maxWidth: '100%',
-            objectFit: 'contain',
-            transition: 'transform var(--transition-slow)',
-            transform: hovered ? 'scale(1.05)' : 'none'
-          }}
         />
         
         {/* Quick View Hover Button */}
@@ -155,39 +117,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         )}
       </div>
 
-      {/* Info Info Section */}
-      <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>
+      {/* Info Section */}
+      <div className="card-info-section">
+        <span className="card-brand-label">
           {product.brand}
         </span>
         
         <h3 
           onClick={() => openQuickView(product)}
-          style={{ 
-            fontSize: '15px', 
-            fontWeight: 600, 
-            color: 'var(--color-text-main)', 
-            cursor: 'pointer',
-            height: '44px',
-            overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            lineHeight: '1.4'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-accent)'}
-          onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-text-main)'}
+          className="card-title-heading"
         >
           {product.name}
         </h3>
 
         {/* Pricing Info */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
-          <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-text-main)' }}>
+          <span className="card-price-display">
             €{product.price.toFixed(2)}
           </span>
           {hasSale && (
-            <span style={{ fontSize: '13px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>
+            <span className="card-price-original">
               €{product.originalPrice?.toFixed(2)}
             </span>
           )}
@@ -195,17 +144,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
 
       {/* Footer Add-To-Cart Action */}
-      <div style={{ marginTop: '16px', display: 'flex', gap: '8px' }}>
+      <div className="card-action-container">
         <button
           onClick={handleAddToCart}
-          className="btn-primary"
-          style={{ 
-            width: '100%', 
-            padding: '10px 16px', 
-            fontSize: '13px',
-            backgroundColor: product.stockStatus === 'outofstock' ? 'var(--color-border)' : 'var(--color-accent)',
-            boxShadow: product.stockStatus === 'outofstock' ? 'none' : '0 4px 10px rgba(255, 125, 4, 0.2)'
-          }}
+          className="card-add-to-cart-btn"
           disabled={isAdding || product.stockStatus === 'outofstock'}
         >
           {product.stockStatus === 'outofstock' ? (

@@ -80,9 +80,9 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
       <div className="container" style={{ padding: '80px 20px', textAlign: 'center', maxWidth: '600px' }}>
         <title>POINTER | Narudžba Uspješna</title>
 
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-lg)', padding: '40px 30px', boxShadow: 'var(--shadow-md)' }} className="animate-scale-in">
+        <div className="order-success-card animate-scale-in">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-            <div style={{ backgroundColor: '#E1EBE2', color: '#2F5935', width: '64px', height: '64px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="success-icon-badge">
               <ShieldCheck size={36} />
             </div>
           </div>
@@ -90,7 +90,8 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
           <p style={{ fontSize: '15px', color: 'var(--color-neutral-slate)', marginBottom: '24px', lineHeight: '1.6' }}>
             Hvala Vam na kupovini u našoj trgovini. Vaša narudžba pod brojem <strong>{orderId}</strong> je uspješno obrađena i proslijeđena skladištu. Poslali smo detalje potvrde na Vaš e-mail.
           </p>
-          <div style={{ borderTop: '1px solid var(--color-neutral-border)', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', textAlign: 'left', marginBottom: '32px' }}>
+          
+          <div className="success-details-list" style={{ marginBottom: '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--color-neutral-muted)' }}>Status narudžbe:</span>
               <span style={{ fontWeight: 'bold', color: '#2F5935' }}>U obradi (Dostava u tijeku)</span>
@@ -118,7 +119,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
       </h1>
 
       {cart.length === 0 ? (
-        <div style={{ backgroundColor: 'white', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', padding: '60px 20px', textAlign: 'center' }}>
+        <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', padding: '60px 20px', textAlign: 'center' }}>
           <ShoppingBag size={48} style={{ color: 'var(--color-neutral-muted)', marginBottom: '16px' }} />
           <p style={{ fontSize: '16px', color: 'var(--color-neutral-muted)', marginBottom: '24px' }}>Vaša košarica je trenutno prazna.</p>
           <button onClick={() => onNavigate('shop')} className="btn-primary">
@@ -149,7 +150,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
 
           <form action={formAction}>
             {/* Split layout */}
-            <div style={{ display: 'flex', gap: '40px' }} className="cart-layout">
+            <div className="shop-page-layout cart-layout">
               
               {/* Left Column: Form / Steps Panels */}
               <div style={{ flexGrow: 1 }} className="cart-list-col">
@@ -160,17 +161,9 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                   {cart.map(item => (
                     <div 
                       key={item.product.id}
-                      style={{
-                        backgroundColor: 'white',
-                        border: '1px solid var(--color-neutral-border)',
-                        borderRadius: 'var(--radius-md)',
-                        padding: '16px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '20px'
-                      }}
+                      className="cart-item-row"
                     >
-                      <div style={{ width: '80px', height: '80px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <div className="cart-item-thumbnail-small">
                         <img src={item.product.images[0]} alt={item.product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                       </div>
                       <div style={{ flexGrow: 1 }}>
@@ -181,34 +174,33 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                       </div>
 
                       {/* Qty Adjustment */}
-                      <div style={{ display: 'flex', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+                      <div className="cart-qty-adjustment">
                         <button 
                           type="button"
                           onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                          style={{ width: '28px', height: '32px', border: 'none', background: 'white', cursor: 'pointer' }}
                         >
                           -
                         </button>
-                        <div style={{ width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 600 }}>
+                        <div className="qty-num">
                           {item.quantity}
                         </div>
                         <button 
                           type="button"
                           onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                          style={{ width: '28px', height: '32px', border: 'none', background: 'white', cursor: 'pointer' }}
                         >
                           +
                         </button>
                       </div>
 
                       {/* Row Total */}
-                      <div style={{ minWidth: '80px', textAlign: 'right', fontWeight: 'bold', fontSize: '15px', color: 'var(--color-neutral-dark)' }}>
+                      <div className="cart-price-column">
                         €{(item.product.price * item.quantity).toFixed(2)}
                       </div>
 
                       <button 
                         type="button"
                         onClick={() => removeFromCart(item.product.id)}
+                        aria-label="Ukloni iz košarice"
                         style={{ background: 'none', border: 'none', color: '#E57373', cursor: 'pointer', padding: '6px' }}
                       >
                         <Trash2 size={18} />
@@ -219,7 +211,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
 
                 {/* STEP 2: Dostava (User details form) */}
                 <div style={{ display: activeStep === 2 ? 'flex' : 'none', flexDirection: 'column', gap: '20px' }} className="animate-fade-in">
-                  <div style={{ backgroundColor: 'white', border: '1px solid var(--color-neutral-border)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                  <div className="delivery-form-container">
                     <h2 style={{ fontSize: '18px', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-neutral-border)', paddingBottom: '10px', marginBottom: '20px', fontWeight: 700 }}>
                       Podaci za Dostavu
                     </h2>
@@ -302,13 +294,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
 
                 {/* STEP 3: Plaćanje (Simulated checkout trigger) */}
                 <div style={{ display: activeStep === 3 ? 'flex' : 'none', flexDirection: 'column', gap: '20px' }} className="animate-fade-in">
-                  <div style={{ backgroundColor: 'white', border: '1px solid var(--color-neutral-border)', padding: '30px', borderRadius: 'var(--radius-md)' }}>
+                  <div className="delivery-form-container">
                     <h2 style={{ fontSize: '18px', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-neutral-border)', paddingBottom: '10px', marginBottom: '20px', fontWeight: 700 }}>
                       Odaberite Način Plaćanja
                     </h2>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: selectedPayment === 'cod' ? 'var(--color-neutral-light)' : 'white' }}>
+                      <label className={`payment-method-card ${selectedPayment === 'cod' ? 'active' : ''}`}>
                         <input 
                           type="radio" 
                           name="paymentMethod" 
@@ -323,7 +315,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                         </div>
                       </label>
 
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', cursor: 'pointer', backgroundColor: selectedPayment === 'card' ? 'var(--color-neutral-light)' : 'white' }}>
+                      <label className={`payment-method-card ${selectedPayment === 'card' ? 'active' : ''}`}>
                         <input 
                           type="radio" 
                           name="paymentMethod" 
@@ -343,7 +335,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                     </div>
 
                     {selectedPayment === 'card' && (
-                      <div className="animate-fade-in" style={{ backgroundColor: 'var(--color-neutral-light)', border: '1px solid var(--color-neutral-border)', padding: '20px', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                      <div className="card-gateway-panel animate-fade-in">
                         <div style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--color-primary)' }}>Podaci o Kartici (Simulacija)</div>
                         <input type="text" placeholder="Broj kartice (xxxx xxxx xxxx xxxx)" className="input-field" />
                         <div style={{ display: 'flex', gap: '16px' }} className="form-row">
@@ -414,7 +406,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
 
               {/* Right Column: Checkout Summary Box */}
               <div style={{ width: '320px', flexShrink: 0 }} className="cart-summary-col">
-                <div style={{ backgroundColor: 'white', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', padding: '24px', position: 'sticky', top: '100px' }}>
+                <div className="cart-summary-card" style={{ position: 'sticky', top: '100px' }}>
                   <h2 style={{ fontSize: '18px', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-neutral-border)', paddingBottom: '10px', marginBottom: '20px', fontWeight: 700 }}>
                     Pregled Narudžbe
                   </h2>

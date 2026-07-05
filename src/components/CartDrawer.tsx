@@ -29,33 +29,24 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
       <div className="cart-drawer-panel">
         
         {/* Drawer Header */}
-        <div 
-          style={{ 
-            padding: '20px 24px', 
-            borderBottom: '1px solid var(--color-neutral-border)', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'space-between',
-            backgroundColor: 'var(--color-bg-card)'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="drawer-header">
+          <div className="drawer-title">
             <ShoppingBag size={18} style={{ color: 'var(--color-accent)' }} />
-            <h3 id="cart-drawer-title" style={{ fontSize: '18px', color: 'var(--color-neutral-dark)' }}>Košarica</h3>
+            <h3 id="cart-drawer-title">Košarica</h3>
           </div>
           <button 
             onClick={closeCartDrawer}
+            className="drawer-close-btn"
             aria-label="Zatvori košaricu"
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-neutral-dark)' }}
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Scrollable list items */}
-        <div style={{ flexGrow: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="drawer-body">
           {cart.length === 0 ? (
-            <div style={{ textAlign: 'center', marginTop: '60px', color: 'var(--color-neutral-muted)' }}>
+            <div className="drawer-empty-msg">
               <ShoppingBag size={48} style={{ margin: '0 auto 16px', opacity: 0.4 }} />
               <p style={{ fontSize: '14px' }}>Vaša košarica je trenutno prazna.</p>
               <button 
@@ -70,19 +61,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
             cart.map((item) => (
               <div 
                 key={item.product.id}
-                style={{ 
-                  display: 'flex', 
-                  gap: '12px', 
-                  alignItems: 'center',
-                  borderBottom: '1px solid var(--color-neutral-border)',
-                  paddingBottom: '16px' 
-                }}
+                className="drawer-cart-item"
               >
-                <div style={{ width: '60px', height: '60px', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', padding: '4px', background: 'white', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="drawer-item-thumbnail">
                   <img src={item.product.images[0]} alt="" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                 </div>
                 
-                <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div className="drawer-item-details">
                   <div 
                     style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-neutral-dark)', cursor: 'pointer' }}
                     onClick={() => { closeCartDrawer(); onNavigate(`product/${item.product.id}`); }}
@@ -92,28 +77,26 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                   <div style={{ fontSize: '12px', color: 'var(--color-neutral-muted)' }}>€{item.product.price.toFixed(2)}</div>
                   
                   {/* Selector qty */}
-                  <div style={{ display: 'flex', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', width: '80px', height: '24px', marginTop: '4px' }}>
+                  <div className="drawer-item-qty-stepper">
                     <button 
                       onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
                       aria-label="Smanji količinu"
-                      style={{ width: '24px', border: 'none', background: 'white', cursor: 'pointer', fontSize: '10px', fontWeight: 'bold' }}
                     >
                       -
                     </button>
-                    <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 600, backgroundColor: 'white' }}>
+                    <div className="qty-val">
                       {item.quantity}
                     </div>
                     <button 
                       onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                       aria-label="Povećaj količinu"
-                      style={{ width: '24px', border: 'none', background: 'white', cursor: 'pointer', fontSize: '10px', fontWeight: 'bold' }}
                     >
                       +
                     </button>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                <div className="drawer-item-price-actions">
                   <div style={{ fontSize: '13px', fontWeight: 'bold', color: 'var(--color-neutral-dark)' }}>
                     €{(item.product.price * item.quantity).toFixed(2)}
                   </div>
@@ -132,7 +115,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
 
         {/* Drawer Footer */}
         {cart.length > 0 && (
-          <div style={{ padding: '24px', borderTop: '1px solid var(--color-neutral-border)', display: 'flex', flexDirection: 'column', gap: '16px', backgroundColor: 'var(--color-bg-card)' }}>
+          <div className="drawer-footer">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '15px' }}>
               <span style={{ color: 'var(--color-neutral-muted)' }}>Međuzbroj:</span>
               <strong style={{ fontSize: '18px', color: 'var(--color-neutral-dark)' }}>€{subtotal.toFixed(2)}</strong>
@@ -149,7 +132,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
               <button 
                 onClick={closeCartDrawer}
                 className="btn-secondary"
-                style={{ width: '100%', height: '44px', border: '1px solid var(--color-neutral-border)' }}
+                style={{ width: '100%', height: '46px' }}
               >
                 Nastavi Kupovinu
               </button>
@@ -161,4 +144,3 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
     </div>
   );
 };
-export default CartDrawer;

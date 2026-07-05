@@ -78,10 +78,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
       </button>
 
       {/* Main Details Grid */}
-      <div style={{ display: 'flex', gap: '50px', marginBottom: '60px' }} className="product-detail-layout">
+      <div className="product-detail-flex product-detail-layout">
         
         {/* Left Column: Gallery */}
-        <div style={{ width: '50%' }} className="detail-gallery-col">
+        <div className="detail-gallery-container detail-gallery-col">
           <div 
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 50, y: 50 }); }}
@@ -140,11 +140,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
         </div>
 
         {/* Right Column: Info Details */}
-        <div style={{ width: '50%' }} className="detail-info-col">
-          <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 800, letterSpacing: '0.07em', display: 'block', marginBottom: '8px' }}>
+        <div className="detail-info-container detail-info-col">
+          <span style={{ fontSize: '12px', textTransform: 'uppercase', color: 'var(--color-neutral-muted)', fontWeight: 800, letterSpacing: '0.07em', display: 'block', marginBottom: '8px' }}>
             {product.brand}
           </span>
-          <h1 style={{ fontSize: '32px', color: 'var(--color-text-main)', lineHeight: '1.2', marginBottom: '16px' }}>
+          <h1 style={{ fontSize: '32px', color: 'var(--color-neutral-dark)', lineHeight: '1.2', marginBottom: '16px' }}>
             {product.name}
           </h1>
 
@@ -154,18 +154,18 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
                 €{product.price.toFixed(2)}
               </span>
               {hasSale && (
-                <span style={{ fontSize: '16px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>
+                <span style={{ fontSize: '16px', color: 'var(--color-neutral-muted)', textDecoration: 'line-through' }}>
                   €{product.originalPrice?.toFixed(2)}
                 </span>
               )}
             </div>
             
-            <div style={{ marginLeft: 'auto', fontSize: '13px', color: 'var(--color-text-muted)' }}>
-              SKU: <strong style={{ color: 'var(--color-text-main)' }}>{product.sku}</strong>
+            <div style={{ marginLeft: 'auto', fontSize: '13px', color: 'var(--color-neutral-muted)' }}>
+              SKU: <strong style={{ color: 'var(--color-neutral-dark)' }}>{product.sku}</strong>
             </div>
           </div>
 
-          <p style={{ fontSize: '15px', color: 'var(--color-text-muted)', lineHeight: '1.7', marginBottom: '24px' }}>
+          <p style={{ fontSize: '15px', color: 'var(--color-neutral-slate)', lineHeight: '1.7', marginBottom: '24px' }}>
             {product.description}
           </p>
 
@@ -173,19 +173,19 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
           {product.stockStatus !== 'outofstock' ? (
             <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '32px' }}>
               {/* Qty Selector */}
-              <div style={{ display: 'flex', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', height: '48px', backgroundColor: 'white' }}>
+              <div className="detail-qty-wrapper">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{ width: '40px', height: '100%', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                  aria-label="Smanji količinu"
                 >
                   -
                 </button>
-                <div style={{ width: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600 }}>
+                <div className="qty-display">
                   {quantity}
                 </div>
                 <button 
                   onClick={() => setQuantity(quantity + 1)}
-                  style={{ width: '40px', height: '100%', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                  aria-label="Povećaj količinu"
                 >
                   +
                 </button>
@@ -204,6 +204,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
               {/* Wishlist toggle */}
               <button
                 onClick={() => toggleWishlist(product.id)}
+                aria-label="Dodaj u listu želja"
                 style={{
                   border: '1px solid var(--color-border)',
                   borderRadius: 'var(--radius-sm)',
@@ -226,16 +227,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
           )}
 
           {/* Lovačke Ponude USP */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid var(--color-border)', paddingTop: '24px', fontSize: '13px', color: 'var(--color-text-main)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', borderTop: '1px solid var(--color-border)', paddingTop: '24px', fontSize: '13px', color: 'var(--color-neutral-dark)' }}>
+            <div className="usp-item-row">
               <Truck size={18} style={{ color: 'var(--color-accent)' }} />
               <span>Besplatna dostava iznad 150 € (Dostava unutar 3-5 radnih dana)</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="usp-item-row">
               <Shield size={18} style={{ color: 'var(--color-accent)' }} />
               <span>100% Sigurna kupnja s jamstvom povrata novca unutar 14 dana</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="usp-item-row">
               <Calendar size={18} style={{ color: 'var(--color-accent)' }} />
               <span>Preuzimanje moguće u trgovini (Koledinečka 1a, Zagreb)</span>
             </div>
@@ -249,7 +250,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
       <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: '40px', marginBottom: '60px' }}>
         
         {/* Tab triggers */}
-        <div className="tabs-header-bar">
+        <div className="tabs-navigation-strip">
           <button 
             className={`tab-trigger-btn ${activeTab === 'description' ? 'active' : ''}`} 
             onClick={() => setActiveTab('description')}
@@ -281,14 +282,16 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
         </div>
 
         <div className={`tab-panel ${activeTab === 'specifications' ? 'active' : ''}`}>
-          <div className="specs-table" style={{ maxWidth: '600px' }}>
-            {Object.entries(product.specifications).map(([key, value]) => (
-              <div key={key} className="specs-row">
-                <span className="specs-label">{key}</span>
-                <span className="specs-value">{value}</span>
-              </div>
-            ))}
-          </div>
+          <table className="specs-table-striped" style={{ maxWidth: '600px' }}>
+            <tbody>
+              {Object.entries(product.specifications).map(([key, value]) => (
+                <tr key={key}>
+                  <td className="specs-label" style={{ width: '40%', color: 'var(--color-neutral-muted)', fontWeight: 500 }}>{key}</td>
+                  <td className="specs-value" style={{ width: '60%', fontWeight: 600, color: 'var(--color-neutral-dark)' }}>{value}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <div className={`tab-panel ${activeTab === 'delivery' ? 'active' : ''}`}>

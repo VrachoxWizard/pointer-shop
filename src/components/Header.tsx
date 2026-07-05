@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, User, Sun, Moon } from 'lucide-react';
 import { CATEGORIES, Product } from '../data/products';
@@ -15,6 +15,22 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Rotating premium announcements list
+  const announcements = [
+    "Besplatna dostava za sve narudžbe iznad 150 €.",
+    "Mogućnost osobnog preuzimanja u poslovnici Koledinečka 1a, Zagreb.",
+    "Ekskluzivni zastupnik za vrhunsku Leupold optiku.",
+    "Sigurna online kupnja i pouzdano jamstvo."
+  ];
+  const [announcementIndex, setAnnouncementIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setAnnouncementIndex((prev) => (prev + 1) % announcements.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -61,101 +77,62 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
   };
 
   return (
-    <header className="site-header" style={{ position: 'sticky', top: 0, zIndex: 100, boxShadow: 'var(--shadow-sm)' }}>
-      {/* Top Banner (Announcement Bar) */}
-      <div 
-        className="top-banner animate-fade-in" 
-        style={{
-          backgroundColor: 'var(--color-primary-dark)',
-          color: 'var(--color-text-light)',
-          textAlign: 'center',
-          padding: '8px 12px',
-          fontSize: '13px',
-          fontWeight: 600,
-          letterSpacing: '0.05em'
-        }}
-      >
-        Besplatna dostava za sve narudžbe iznad 150 €.
+    <header className="site-header site-header-sticky">
+      {/* Dynamic Sliding Announcement Bar */}
+      <div className="announcement-bar">
+        <div className="announcement-bar-track">
+          <div className="announcement-bar-item" key={announcementIndex}>
+            {announcements[announcementIndex]}
+          </div>
+        </div>
       </div>
 
       {/* Main Header Container */}
-      <div className="glassmorphism" style={{ borderBottom: '1px solid var(--color-border)', backgroundColor: 'rgba(250, 249, 246, 0.95)' }}>
+      <div className="glassmorphism-header">
         <div className="container" style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           
           {/* Logo / Brand */}
           <div 
             onClick={() => onNavigate('home')} 
-            className="logo" 
-            style={{ 
-              cursor: 'pointer', 
-              fontFamily: 'var(--font-heading)', 
-              fontWeight: 800, 
-              fontSize: '26px', 
-              color: 'var(--color-primary)',
-              letterSpacing: '0.05em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
+            className="logo site-logo-container"
           >
             <img 
               src="/images/cropped-logo-32x32.png" 
               alt="Pointer logo" 
-              style={{ width: '32px', height: '32px', display: 'block' }}
+              className="logo-image"
             />
-            POINTER
+            <span>POINTER</span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '100%' }}>
+          <nav className="desktop-nav desktop-navigation-links">
             {CATEGORIES.map((cat) => (
               <div 
                 key={cat.id} 
-                className="nav-item-dropdown"
+                className="nav-item-dropdown-container"
                 onMouseEnter={() => setActiveDropdown(cat.id)}
                 onMouseLeave={() => setActiveDropdown(null)}
-                style={{ position: 'relative', height: '70px', display: 'flex', alignItems: 'center' }}
               >
                 <button 
                   onClick={() => onNavigate('shop', cat.id)}
-                  className="premium-nav-link"
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontFamily: 'var(--font-heading)',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    padding: '8px 12px',
-                    color: currentRoute.startsWith('shop') && activeDropdown === cat.id ? 'var(--color-accent)' : 'var(--color-primary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em'
-                  }}
+                  className={`premium-nav-link ${
+                    (currentRoute.startsWith('shop') && activeDropdown === cat.id) || currentRoute === `shop?category=${cat.id}`
+                      ? 'active'
+                      : ''
+                  }`}
                 >
                   {cat.name}
-                  <ChevronDown size={14} />
+                  <ChevronDown 
+                    size={14} 
+                    style={{ 
+                      transform: activeDropdown === cat.id ? 'rotate(180deg)' : 'none', 
+                      transition: 'transform 0.25s ease' 
+                    }} 
+                  />
                 </button>
 
                 {activeDropdown === cat.id && cat.subCategories && (
-                  <div 
-                    className="dropdown-menu animate-slide-up"
-                    style={{
-                      position: 'absolute',
-                      top: '70px',
-                      left: 0,
-                      backgroundColor: 'var(--color-bg-card)',
-                      boxShadow: 'var(--shadow-md)',
-                      borderRadius: '0 0 var(--radius-md) var(--radius-md)',
-                      minWidth: '220px',
-                      padding: '12px 0',
-                      border: '1px solid var(--color-border)',
-                      borderTop: 'none',
-                      zIndex: 200
-                    }}
-                  >
+                  <div className="nav-dropdown-menu">
                     {cat.subCategories.map((sub) => (
                       <button
                         key={sub}
@@ -163,26 +140,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                           onNavigate(`shop?category=${cat.id}&sub=${encodeURIComponent(sub)}`);
                           setActiveDropdown(null);
                         }}
-                        style={{
-                          width: '100%',
-                          textAlign: 'left',
-                          padding: '10px 20px',
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '13px',
-                          fontWeight: 500,
-                          color: 'var(--color-text-main)',
-                          transition: 'var(--transition-fast)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = 'var(--color-bg-site)';
-                          e.currentTarget.style.color = 'var(--color-accent)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.color = 'var(--color-text-main)';
-                        }}
+                        className="nav-dropdown-item"
                       >
                         {sub.toUpperCase()}
                       </button>
@@ -194,49 +152,27 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             
             <button 
               onClick={() => onNavigate('about-us')}
-              className="premium-nav-link"
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '14px',
-                padding: '8px 16px',
-                color: currentRoute === 'about-us' ? 'var(--color-accent)' : 'var(--color-primary)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-              }}
+              className={`premium-nav-link ${currentRoute === 'about-us' ? 'active' : ''}`}
+              style={{ padding: '8px 16px' }}
             >
               O NAMA
             </button>
             <button 
               onClick={() => onNavigate('contact')}
-              className="premium-nav-link"
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '14px',
-                padding: '8px 16px',
-                color: currentRoute === 'contact' ? 'var(--color-accent)' : 'var(--color-primary)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-              }}
+              className={`premium-nav-link ${currentRoute === 'contact' ? 'active' : ''}`}
+              style={{ padding: '8px 16px' }}
             >
               KONTAKT
             </button>
           </nav>
 
           {/* Header Action Icons */}
-          <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div className="header-actions actions-group">
             {/* Theme Toggle Switch */}
             <button 
               onClick={toggleTheme}
+              className="theme-toggle-btn"
               aria-label={theme === 'light' ? "Aktiviraj tamni način rada" : "Aktiviraj svijetli način rada"}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', display: 'flex', alignItems: 'center' }}
               title={theme === 'light' ? 'Tamni način rada' : 'Svijetli način rada'}
             >
               {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
@@ -247,7 +183,6 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
               onClick={handleToggleSearch}
               aria-label="Pretraži trgovinu"
               aria-expanded={isSearchOpen}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)' }}
               title="Traži"
             >
               <Search size={22} />
@@ -257,26 +192,11 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             <button 
               onClick={() => onNavigate('account')}
               aria-label={`Lista želja, ${wishlist.length} proizvoda`}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', position: 'relative' }}
               title="Lista želja"
             >
               <Heart size={22} fill={wishlist.length > 0 ? 'var(--color-accent)' : 'none'} stroke={wishlist.length > 0 ? 'var(--color-accent)' : 'currentColor'} />
               {wishlist.length > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '-6px',
-                  right: '-6px',
-                  backgroundColor: 'var(--color-accent)',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '16px',
-                  height: '16px',
-                  fontSize: '9px',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <span className="action-badge-pulse">
                   {wishlist.length}
                 </span>
               )}
@@ -286,7 +206,6 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             <button 
               onClick={() => onNavigate('account')}
               aria-label="Moj račun"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)' }}
               title="Moj Račun"
             >
               <User size={22} />
@@ -297,34 +216,11 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
               onClick={openCartDrawer}
               aria-label={`Košarica, ${cartCount} proizvoda`}
               aria-haspopup="dialog"
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                cursor: 'pointer', 
-                color: 'var(--color-primary)',
-                position: 'relative',
-                display: 'flex',
-                alignItems: 'center'
-              }}
               title="Košarica"
             >
               <ShoppingBag size={22} />
               {cartCount > 0 && (
-                <span style={{
-                  position: 'absolute',
-                  top: '-6px',
-                  right: '-6px',
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white',
-                  borderRadius: '50%',
-                  width: '16px',
-                  height: '16px',
-                  fontSize: '9px',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}>
+                <span className="action-badge-pulse badge-primary">
                   {cartCount}
                 </span>
               )}
@@ -336,7 +232,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label="Glavni izbornik"
               aria-expanded={isMobileMenuOpen}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', display: 'none' }}
+              style={{ display: 'none' }}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -347,20 +243,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
       {/* Floating Search Bar */}
       {isSearchOpen && (
-        <div 
-          className="search-drawer animate-fade-in"
-          style={{
-            position: 'absolute',
-            top: '110px',
-            left: 0,
-            width: '100%',
-            backgroundColor: 'var(--color-bg-card)',
-            boxShadow: 'var(--shadow-md)',
-            padding: '16px 20px',
-            borderBottom: '1px solid var(--color-border)',
-            zIndex: 90
-          }}
-        >
+        <div className="search-panel-drawer animate-fade-in">
           <div className="container">
             <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '12px' }}>
               <input 
@@ -377,20 +260,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
             {/* Live Search Suggestions */}
             {suggestions.length > 0 && (
-              <div 
-                className="glassmorphism animate-scale-in"
-                style={{
-                  marginTop: '12px',
-                  borderRadius: 'var(--radius-md)',
-                  overflow: 'hidden',
-                  boxShadow: 'var(--shadow-lg)',
-                  border: '1px solid var(--color-neutral-border)',
-                  backgroundColor: 'white',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  zIndex: 100
-                }}
-              >
+              <div className="suggestions-panel animate-scale-in">
                 {suggestions.map(p => (
                   <div 
                     key={p.id}
@@ -400,17 +270,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                       setSuggestions([]);
                       setSearchQuery('');
                     }}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '16px',
-                      padding: '10px 16px',
-                      cursor: 'pointer',
-                      borderBottom: '1px solid var(--color-neutral-border)',
-                      transition: 'var(--transition-fast)'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-neutral-light)'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                    className="suggestion-item-row"
                   >
                     <img src={p.images[0]} alt="" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                     <div style={{ flexGrow: 1, textAlign: 'left' }}>
@@ -428,20 +288,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
       {/* Mobile Navigation Drawer */}
       {isMobileMenuOpen && (
-        <div 
-          className="mobile-nav-drawer animate-slide-up"
-          style={{
-            position: 'fixed',
-            top: '110px',
-            left: 0,
-            width: '100%',
-            height: 'calc(100vh - 110px)',
-            backgroundColor: 'var(--color-bg-card)',
-            zIndex: 400,
-            overflowY: 'auto',
-            padding: '20px 16px'
-          }}
-        >
+        <div className="mobile-navigation-drawer animate-slide-up">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {CATEGORIES.map((cat) => (
               <div key={cat.id} style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
@@ -456,7 +303,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                     border: 'none',
                     fontWeight: 700,
                     fontSize: '16px',
-                    color: 'var(--color-primary)',
+                    color: 'inherit',
                     textTransform: 'uppercase',
                     textAlign: 'left'
                   }}
@@ -485,7 +332,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                           border: 'none',
                           textAlign: 'left',
                           fontSize: '14px',
-                          color: 'var(--color-text-main)',
+                          color: 'inherit',
                           padding: '4px 0'
                         }}
                       >
@@ -499,13 +346,13 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             
             <button 
               onClick={() => { onNavigate('about-us'); setIsMobileMenuOpen(false); }}
-              style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'var(--color-primary)', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
+              style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'inherit', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
             >
               O NAMA
             </button>
             <button 
               onClick={() => { onNavigate('contact'); setIsMobileMenuOpen(false); }}
-              style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'var(--color-primary)', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
+              style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'inherit', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
             >
               KONTAKTIRAJTE NAS
             </button>

@@ -31,63 +31,21 @@ export const QuickViewModal: React.FC = () => {
 
   return (
     <div 
-      className="modal-overlay animate-fade-in"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 500,
-        padding: '20px'
-      }}
+      className="modal-overlay-custom animate-fade-in"
       onClick={(e) => { if (e.target === e.currentTarget) closeQuickView(); }}
     >
-      <div 
-        className="modal-box animate-slide-up"
-        style={{
-          backgroundColor: 'var(--color-bg-card)',
-          width: '100%',
-          maxWidth: '850px',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'hidden',
-          position: 'relative',
-          display: 'flex',
-          maxHeight: '90vh',
-          boxShadow: 'var(--shadow-lg)'
-        }}
-      >
+      <div className="modal-inner-box animate-slide-up">
         {/* Close Button */}
         <button 
           onClick={closeQuickView}
-          style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            background: 'rgba(250, 249, 246, 0.9)',
-            border: 'none',
-            borderRadius: '50%',
-            width: '36px',
-            height: '36px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            zIndex: 10,
-            transition: 'var(--transition-fast)'
-          }}
-          onMouseEnter={(e)=>e.currentTarget.style.backgroundColor='white'}
-          onMouseLeave={(e)=>e.currentTarget.style.backgroundColor='rgba(250, 249, 246, 0.9)'}
+          className="modal-close-btn"
+          aria-label="Zatvori brzi pregled"
         >
           <X size={20} />
         </button>
 
         {/* Left: Gallery Column */}
-        <div style={{ width: '50%', borderRight: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', backgroundColor: '#FDFCFA', padding: '40px 24px 24px' }}>
+        <div className="modal-gallery-col">
           <div 
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 50, y: 50 }); }}
@@ -143,13 +101,13 @@ export const QuickViewModal: React.FC = () => {
         </div>
 
         {/* Right: Info Column */}
-        <div style={{ width: '50%', padding: '40px 32px 32px', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <div className="modal-info-col">
           
           <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em', marginBottom: '4px' }}>
             {quickViewProduct.brand}
           </span>
           
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--color-text-main)', lineHeight: '1.3', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '22px', fontWeight: 700, color: 'var(--color-neutral-dark)', lineHeight: '1.3', marginBottom: '12px' }}>
             {quickViewProduct.name}
           </h2>
 
@@ -177,12 +135,12 @@ export const QuickViewModal: React.FC = () => {
 
           {/* Spec details grid */}
           <div style={{ backgroundColor: 'var(--color-bg-site)', padding: '12px 16px', borderRadius: 'var(--radius-md)', marginBottom: '24px', border: '1px solid var(--color-border)' }}>
-            <h4 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-text-main)', marginBottom: '8px', fontWeight: 700 }}>Specifikacije</h4>
+            <h4 style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-neutral-dark)', marginBottom: '8px', fontWeight: 700 }}>Specifikacije</h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '13px' }}>
               {Object.entries(quickViewProduct.specifications).slice(0, 4).map(([key, value]) => (
                 <div key={key} style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--color-text-muted)' }}>{key}:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--color-text-main)' }}>{value}</span>
+                  <span style={{ fontWeight: 600, color: 'var(--color-neutral-dark)' }}>{value}</span>
                 </div>
               ))}
             </div>
@@ -197,19 +155,19 @@ export const QuickViewModal: React.FC = () => {
             <div style={{ marginTop: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
               
               {/* Quantity Selector */}
-              <div style={{ display: 'flex', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', height: '44px' }}>
+              <div className="detail-qty-wrapper">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  style={{ width: '36px', height: '100%', background: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                  aria-label="Smanji količinu"
                 >
                   -
                 </button>
-                <div style={{ width: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 600 }}>
+                <div className="qty-display">
                   {quantity}
                 </div>
                 <button 
                   onClick={() => setQuantity(quantity + 1)}
-                  style={{ width: '36px', height: '100%', background: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                  aria-label="Povećaj količinu"
                 >
                   +
                 </button>
@@ -220,7 +178,7 @@ export const QuickViewModal: React.FC = () => {
                 onClick={handleAddToCart}
                 disabled={isAdding}
                 className="btn-primary"
-                style={{ flexGrow: 1, height: '44px' }}
+                style={{ flexGrow: 1, height: '48px' }}
               >
                 {isAdding ? (
                   'Dodavanje...'
@@ -234,11 +192,12 @@ export const QuickViewModal: React.FC = () => {
               {/* Favorite */}
               <button
                 onClick={() => toggleWishlist(quickViewProduct.id)}
+                aria-label="Popis želja"
                 style={{
                   border: '1px solid var(--color-border)',
                   borderRadius: 'var(--radius-sm)',
-                  height: '44px',
-                  width: '44px',
+                  height: '48px',
+                  width: '48px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -259,21 +218,21 @@ export const QuickViewModal: React.FC = () => {
       {/* Embedded responsive stylesheet */}
       <style>{`
         @media (max-width: 768px) {
-          .modal-box {
+          .modal-inner-box {
             flex-direction: column !important;
             max-height: 95vh !important;
             overflow-y: auto !important;
           }
-          .modal-box > div {
+          .modal-inner-box > div {
             width: 100% !important;
           }
-          .modal-box > div:first-child {
+          .modal-inner-box > div:first-child {
             padding: 30px 16px 16px !important;
             height: auto !important;
             border-right: none !important;
             border-bottom: 1px solid var(--color-border) !important;
           }
-          .modal-box > div:last-child {
+          .modal-inner-box > div:last-child {
             padding: 24px 20px 20px !important;
           }
         }

@@ -41,7 +41,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
       {/* Hero Banner Section */}
       <Reveal duration={0.8} direction="none">
-        <section style={{ position: 'relative', width: '100%', cursor: 'pointer', overflow: 'hidden', height: '600px' }} onClick={() => onNavigate('shop')}>
+        <section className="hero-banner-wrap" onClick={() => onNavigate('shop')}>
           <img 
             src="/images/2-5.png" 
             alt="Leupold Banner" 
@@ -55,19 +55,12 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             }}
           />
           {/* Subtle overlay styling */}
-          <div style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%',
-            background: 'linear-gradient(to right, rgba(26,29,21,0.4) 0%, rgba(26,29,21,0) 80%)',
-            display: 'flex',
-            alignItems: 'center',
-            paddingLeft: '8%'
-          }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', color: 'white', maxWidth: '400px' }}>
-              <span style={{ textTransform: 'uppercase', fontSize: '12px', letterSpacing: '0.15em', color: 'var(--color-accent)', fontWeight: 700 }}>Ekskluzivni Zastupnik</span>
-              <h1 style={{ fontSize: '36px', lineHeight: '1.2' }}>LEUPOLD OPTIKA</h1>
-              <p style={{ fontSize: '14px', opacity: 0.9 }}>Istražite vrhunski asortiman najpouzdanijih nišana na svijetu.</p>
-              <button className="btn-primary" style={{ alignSelf: 'flex-start', marginTop: '10px' }}>
+          <div className="hero-overlay-mask">
+            <div className="hero-content-box">
+              <span className="hero-badge">Ekskluzivni Zastupnik</span>
+              <h1>Leupold Optika</h1>
+              <p>Istražite vrhunski asortiman najpouzdanijih optičkih nišana na svijetu.</p>
+              <button className="hero-btn-primary">
                 Istraži Ponudu <ArrowRight size={16}/>
               </button>
             </div>
@@ -80,36 +73,20 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         <section style={{ margin: '40px 0' }} className="container">
           <div 
             onClick={() => onNavigate('shop?category=odjeca')}
-            style={{
-              position: 'relative',
-              borderRadius: 'var(--radius-lg)',
-              overflow: 'hidden',
-              cursor: 'pointer',
-              boxShadow: 'var(--shadow-md)',
-              height: '280px'
-            }}
+            className="secondary-banner-wrap"
           >
             <img 
               src="/images/istrazi-ponudu_optimized.webp" 
               alt="Alaska 1795" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-            <div style={{
-              position: 'absolute',
-              top: 0, left: 0, width: '100%', height: '100%',
-              background: 'rgba(0,0,0,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              textAlign: 'center',
-              padding: '20px'
-            }}>
-              <div style={{ color: 'white', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <h2 style={{ fontSize: '32px' }}>ALASKA 1795 ODJEĆA</h2>
-                <p style={{ fontSize: '15px', fontWeight: 500, letterSpacing: '0.05em' }}>
+            <div className="secondary-banner-overlay">
+              <div style={{ maxWidth: '480px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <h2 style={{ fontSize: '28px', color: 'white', margin: 0 }}>ALASKA 1795 ODJEĆA</h2>
+                <p style={{ fontSize: '14.5px', fontWeight: 500, opacity: 0.95, color: '#e8e8e8', margin: 0 }}>
                   Lovac u srcu. Finska lovačka odjeća za sve vremenske uvjete.
                 </p>
-                <span style={{ fontSize: '14px', textDecoration: 'underline', marginTop: '10px', display: 'block', fontWeight: 'bold' }}>
+                <span className="banner-btn-secondary">
                   Pogledaj Lovačke Kompleti
                 </span>
               </div>
@@ -121,7 +98,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       {/* Core Categories Grid */}
       <Reveal delay={0.2}>
         <section className="container" style={{ marginBottom: '60px' }}>
-          <h2 style={{ fontSize: '24px', marginBottom: '24px', textAlign: 'center', color: 'var(--color-primary)' }}>POPULARNE KATEGORIJE</h2>
+          <h2 className="popular-categories-heading">Popularne Kategorije</h2>
           
           {/* Tier 1 Grid */}
           <div className="grid-cols-3" style={{ marginBottom: '24px' }}>
@@ -133,24 +110,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <div 
                 key={item.name} 
                 onClick={() => onNavigate(item.link)}
-                style={{
-                  position: 'relative',
-                  borderRadius: 'var(--radius-md)',
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  height: '180px',
-                  border: '1px solid var(--color-border)',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
                 className="category-card"
+                style={{ height: '180px', border: '1px solid var(--color-border)' }}
               >
-                <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} />
-                <div className="card-overlay" style={{
-                  position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                  backgroundColor: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'flex-end', padding: '16px'
-                }}>
-                  <span style={{ color: 'white', fontWeight: 'bold', fontSize: '16px', fontFamily: 'var(--font-heading)' }}>
-                    {item.name.toUpperCase()}
+                <img src={item.img} alt={item.name} />
+                <div className="card-overlay">
+                  <span className="category-card-text">
+                    {item.name}
                   </span>
                 </div>
               </div>
@@ -177,24 +143,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <div 
                 key={item.name} 
                 onClick={() => onNavigate(item.link)}
-                style={{
-                  position: 'relative',
-                  borderRadius: 'var(--radius-md)',
-                  overflow: 'hidden',
-                  cursor: 'pointer',
-                  height: '140px',
-                  border: '1px solid var(--color-border)',
-                  boxShadow: 'var(--shadow-sm)'
-                }}
                 className="category-card"
+                style={{ height: '140px', border: '1px solid var(--color-border)' }}
               >
-                <img src={item.img} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }} />
-                <div className="card-overlay" style={{
-                  position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                  backgroundColor: 'rgba(0,0,0,0.15)', display: 'flex', alignItems: 'flex-end', padding: '12px'
-                }}>
-                  <span style={{ color: 'white', fontWeight: 700, fontSize: '13px', fontFamily: 'var(--font-heading)' }}>
-                    {item.name.toUpperCase()}
+                <img src={item.img} alt={item.name} />
+                <div className="card-overlay">
+                  <span className="category-card-text" style={{ fontSize: '13px' }}>
+                    {item.name}
                   </span>
                 </div>
               </div>
@@ -240,21 +195,34 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
       {/* Brand carousel / logos slider */}
       <Reveal delay={0.1}>
-        <section style={{ backgroundColor: 'white', padding: '40px 0', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)', marginBottom: '60px' }}>
+        <section style={{ backgroundColor: 'var(--color-bg-card)', padding: '40px 0', borderTop: '1px solid var(--color-border)', borderBottom: '1px solid var(--color-border)', marginBottom: '60px' }}>
           <div className="container">
-            <h3 style={{ fontSize: '14px', textTransform: 'uppercase', textAlign: 'center', letterSpacing: '0.1em', color: 'var(--color-text-muted)', marginBottom: '30px', fontWeight: 800 }}>
+            <h3 style={{ fontSize: '14px', textTransform: 'uppercase', textAlign: 'center', letterSpacing: '0.1em', color: 'var(--color-neutral-muted)', marginBottom: '30px', fontWeight: 800 }}>
               POPULARNI BRENDOVI
             </h3>
-            <div className="brands-logo-container">
-              {brandLogos.map((logo, idx) => (
-                <img 
-                  key={idx} 
-                  src={logo} 
-                  alt="Brand logo" 
-                  className="brand-logo-img"
-                />
-              ))}
+            
+            <div className="brand-logo-carousel-container">
+              <div className="brand-marquee-track">
+                {brandLogos.map((logo, idx) => (
+                  <img 
+                    key={idx} 
+                    src={logo} 
+                    alt="Brand logo" 
+                    className="brand-logo-card"
+                  />
+                ))}
+                {/* Duplicate logos to create a seamless looping marquee slider */}
+                {brandLogos.map((logo, idx) => (
+                  <img 
+                    key={`dup-${idx}`} 
+                    src={logo} 
+                    alt="Brand logo" 
+                    className="brand-logo-card"
+                  />
+                ))}
+              </div>
             </div>
+
           </div>
         </section>
       </Reveal>
