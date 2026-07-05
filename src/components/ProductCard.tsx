@@ -17,12 +17,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) / 20;
-    const y = (e.clientY - top - height / 2) / 20;
+    const x = (e.clientX - left - width / 2) / 35;
+    const y = (e.clientY - top - height / 2) / 35;
     
     // Direct DOM manipulation of transform for optimal performance
     cardRef.current.style.transition = 'transform 0.08s ease-out';
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.02)`;
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.01)`;
     cardRef.current.style.zIndex = '2';
   };
 
@@ -99,17 +99,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="animate-fade-in"
             style={{
               position: 'absolute',
-              bottom: '8px',
-              backgroundColor: 'rgba(67, 73, 34, 0.95)',
+              bottom: '12px',
+              background: 'var(--glass-bg-dark)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid var(--glass-border-dark)',
               color: 'white',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
+              padding: '8px 16px',
+              borderRadius: 'var(--radius-full)',
               fontSize: '12px',
               fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+              boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
+              transform: 'translateY(0)',
+              transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
             }}
           >
             <Eye size={14} /> Brzi Pregled

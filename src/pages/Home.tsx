@@ -56,8 +56,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           />
           {/* Subtle overlay styling */}
           <div className="hero-overlay-mask">
-            <div className="hero-content-box">
-              <span className="hero-badge">Ekskluzivni Zastupnik</span>
+            <div className="hero-content-box glassmorphism-dark" style={{ padding: '40px', borderRadius: 'var(--radius-lg)' }}>
+              <span className="hero-badge" style={{ letterSpacing: '0.15em' }}>Ekskluzivni Zastupnik</span>
               <h1>Leupold Optika</h1>
               <p>Istražite vrhunski asortiman najpouzdanijih optičkih nišana na svijetu.</p>
               <button className="hero-btn-primary">
@@ -103,15 +103,15 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           {/* Tier 1 Grid */}
           <div className="grid-cols-3" style={{ marginBottom: '24px' }}>
             {[
-              { name: 'Dugo Oružje', img: '/images/1-1-rh9qc00uywzq8843qijnicwnpnvxyljp8p4opwib4g.jpg', link: 'shop?category=oruzje&sub=Dugo%20oru%C5%BEje' },
+              { name: 'Dugo Oružje', img: '/images/1-1-rh9qc00uywzq8843qijnicwnpnvxyljp8p4opwib4g.jpg', link: 'shop?category=oruzje&sub=Dugo%20oru%C5%BEje', span: true },
               { name: 'Moderno Oružje', img: '/images/hk-rheqfsuprstrre14w695x6zef623o7sc0j64gawukw.png', link: 'shop?category=oruzje&sub=Moderno%20oru%C5%BEje' },
               { name: 'Kratko Oružje', img: '/images/2-1-rh9qc3s7q94vinyn4k65sbyi37detdyml7qmn0cqfk.jpg', link: 'shop?category=oruzje&sub=Kratko%20oru%C5%BEje' }
             ].map(item => (
               <div 
                 key={item.name} 
                 onClick={() => onNavigate(item.link)}
-                className="category-card"
-                style={{ height: '180px', border: '1px solid var(--color-border)' }}
+                className={`category-card ${item.span ? 'col-span-2' : ''}`}
+                style={{ height: '220px', border: '1px solid var(--color-border)' }}
               >
                 <img src={item.img} alt={item.name} />
                 <div className="card-overlay">
@@ -144,7 +144,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                 key={item.name} 
                 onClick={() => onNavigate(item.link)}
                 className="category-card"
-                style={{ height: '140px', border: '1px solid var(--color-border)' }}
+                style={{ height: '160px', border: '1px solid var(--color-border)' }}
               >
                 <img src={item.img} alt={item.name} />
                 <div className="card-overlay">
@@ -185,7 +185,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             </button>
           </div>
 
-          <div className="grid-cols-4">
+          <div className="product-scroll-carousel">
             {newProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -252,7 +252,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
             </button>
           </div>
 
-          <div className="grid-cols-4">
+          <div className="product-scroll-carousel">
             {ammoProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
