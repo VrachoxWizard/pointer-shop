@@ -7,6 +7,15 @@ export const QuickViewModal: React.FC = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomPos({ x, y });
+  };
 
   if (!quickViewProduct) return null;
 
@@ -79,11 +88,33 @@ export const QuickViewModal: React.FC = () => {
 
         {/* Left: Gallery Column */}
         <div style={{ width: '50%', borderRight: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', backgroundColor: '#FDFCFA', padding: '40px 24px 24px' }}>
-          <div style={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', marginBottom: '20px' }}>
+          <div 
+            onMouseEnter={() => setIsZoomed(true)}
+            onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 50, y: 50 }); }}
+            onMouseMove={handleMouseMove}
+            style={{ 
+              flexGrow: 1, 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              height: '300px', 
+              marginBottom: '20px',
+              overflow: 'hidden',
+              position: 'relative',
+              cursor: 'zoom-in'
+            }}
+          >
             <img 
               src={quickViewProduct.images[selectedImageIndex]} 
               alt={quickViewProduct.name} 
-              style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }}
+              style={{ 
+                maxHeight: '100%', 
+                maxWidth: '100%', 
+                objectFit: 'contain',
+                transform: isZoomed ? 'scale(2.2)' : 'scale(1)',
+                transformOrigin: isZoomed ? `${zoomPos.x}% ${zoomPos.y}%` : 'center',
+                transition: isZoomed ? 'none' : 'transform 0.35s ease'
+              }}
             />
           </div>
 

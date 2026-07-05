@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
-import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, User } from 'lucide-react';
+import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, User, Sun, Moon } from 'lucide-react';
 import { CATEGORIES, Product } from '../data/products';
 
 interface HeaderProps {
@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
-  const { cart, wishlist, products } = useShop();
+  const { cart, wishlist, products, theme, toggleTheme, openCartDrawer } = useShop();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Product[]>([]);
@@ -232,6 +232,15 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
           {/* Header Action Icons */}
           <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Theme Toggle Switch */}
+            <button 
+              onClick={toggleTheme}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', display: 'flex', alignItems: 'center' }}
+              title={theme === 'light' ? 'Tamni način rada' : 'Svijetli način rada'}
+            >
+              {theme === 'light' ? <Moon size={22} /> : <Sun size={22} />}
+            </button>
+
             {/* Search Toggle */}
             <button 
               onClick={handleToggleSearch}
@@ -280,7 +289,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
             {/* Cart Icon */}
             <button 
-              onClick={() => onNavigate('cart')}
+              onClick={openCartDrawer}
               style={{ 
                 background: 'none', 
                 border: 'none', 

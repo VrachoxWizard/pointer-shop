@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useTransition, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useTransition, ReactNode } from 'react';
 import { Product, PRODUCTS } from '../data/products';
 
 export interface CartItem {
@@ -20,6 +20,8 @@ interface ShopContextType {
   quickViewProduct: Product | null;
   isCartAdding: boolean;
   toasts: ToastMessage[];
+  theme: 'light' | 'dark';
+  isCartDrawerOpen: boolean;
   addToCart: (productId: string, qty?: number) => Promise<void>;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
@@ -29,6 +31,9 @@ interface ShopContextType {
   clearCart: () => void;
   showToast: (title: string, message: string, image?: string) => void;
   removeToast: (id: string) => void;
+  toggleTheme: () => void;
+  openCartDrawer: () => void;
+  closeCartDrawer: () => void;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
@@ -38,9 +43,30 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   
+  // Theme state
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const cached = localStorage.getItem('pointer_theme');
+    if (cached === 'dark' || cached === 'light') return cached;
+    return 'light'; // Default Light
+  });
+
+  // Sync theme attribute in HTML
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('pointer_theme', theme);
+  }, [theme]);
+
   // React 19 transition to handle asynchronous adding animation state
   const [isCartAdding, startCartAddingTransition] = useTransition();
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
+  const openCartDrawer = () => setIsCartDrawerOpen(true);
+  const closeCartDrawer = () => setIsCartDrawerOpen(false);
 
   const showToast = (title: string, message: string, image?: string) => {
     const id = Math.random().toString(36).substring(2, 9);
@@ -76,6 +102,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           });
           
           showToast('Dodano u košaricu', product.name, product.images[0]);
+          // Auto-slide open the mini cart drawer
+          setIsCartDrawerOpen(true);
         }
         
         resolve();
@@ -141,6 +169,8 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         quickViewProduct,
         isCartAdding,
         toasts,
+        theme,
+        isCartDrawerOpen,
         addToCart,
         removeFromCart,
         updateQuantity,
@@ -149,7 +179,10 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         closeQuickView,
         clearCart,
         showToast,
-        removeToast
+        removeToast,
+        toggleTheme,
+        openCartDrawer,
+        closeCartDrawer
       }}
     >
       {children}

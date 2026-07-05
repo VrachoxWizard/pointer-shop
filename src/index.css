@@ -791,3 +791,106 @@ input[type="range"]::-webkit-slider-thumb:hover {
   color: var(--color-neutral-muted);
 }
 
+/* Smooth color transitions for theme switcher */
+body, header, main, footer, div, button, input, select, textarea, aside, a {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 8. Midnight Moss Dark Theme Variables */
+[data-theme="dark"] {
+  --color-neutral-dark: #FAF8F5;  /* Off-White Text */
+  --color-neutral-slate: #C4C9BD; /* Muted Moss-Gray text */
+  --color-neutral-muted: #838C7A; /* Deep Moss-Gray text */
+  --color-neutral-border: #2D3325; /* Dark sage borders */
+  --color-neutral-light: #0F110C;  /* Dark obsidian green-black backdrop */
+  --color-bg-card: #171B12;       /* Charcoal Moss Card backdrop */
+  --color-border: #2D3325;
+  --glass-bg: rgba(23, 27, 18, 0.85);
+  --glass-bg-dark: rgba(10, 11, 8, 0.95);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 48px rgba(0, 0, 0, 0.5);
+  --shadow-premium: 0 25px 60px -15px rgba(0, 0, 0, 0.6);
+  background-color: var(--color-neutral-light);
+  color: var(--color-neutral-dark);
+}
+
+/* Maintain header/footer backgrounds in Dark Mode */
+[data-theme="dark"] .glassmorphism {
+  background-color: rgba(23, 27, 18, 0.9) !important;
+}
+
+[data-theme="dark"] .site-header {
+  background-color: var(--color-bg-card) !important;
+}
+
+[data-theme="dark"] .specs-row:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+/* 9. Floating Cart Drawer Overlay & Panels */
+.cart-drawer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.cart-drawer-panel {
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  background-color: var(--color-bg-card);
+  border-left: 1px solid var(--color-neutral-border);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  animation: slideInRightDrawer 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRightDrawer {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* 10. Premium Button Shimmer Reflective Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::before {
+  animation: shimmerSweep 0.8s ease;
+}
+
+@keyframes shimmerSweep {
+  100% { left: 150%; }
+}
+
+

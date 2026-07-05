@@ -6,6 +6,7 @@ import { QuickViewModal } from './components/QuickViewModal';
 import { CookieBanner } from './components/CookieBanner';
 import { PromoPopup } from './components/PromoPopup';
 import { Toast } from './components/Toast';
+import { CartDrawer } from './components/CartDrawer';
 
 // Pages
 import { Home } from './pages/Home';
@@ -144,6 +145,7 @@ export const App: React.FC = () => {
       <CookieBanner />
       <PromoPopup />
       <Toast />
+      <CartDrawer onNavigate={navigateWithHashUpdate} />
 
     </div>
   );
