@@ -226,20 +226,11 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
       <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: '40px', marginBottom: '60px' }}>
         <h2 style={{ fontSize: '20px', color: 'var(--color-primary)', marginBottom: '20px' }}>TEHNIČKI DETALJI</h2>
         
-        <div style={{ maxWidth: '600px', display: 'flex', flexDirection: 'column', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
-          {Object.entries(product.specifications).map(([key, value], idx) => (
-            <div 
-              key={key} 
-              style={{ 
-                display: 'flex', 
-                padding: '12px 18px', 
-                backgroundColor: idx % 2 === 0 ? '#FFFFFF' : 'var(--color-bg-site)',
-                borderBottom: idx === Object.entries(product.specifications).length - 1 ? 'none' : '1px solid var(--color-border)',
-                fontSize: '14px'
-              }}
-            >
-              <span style={{ width: '40%', color: 'var(--color-text-muted)', fontWeight: 500 }}>{key}</span>
-              <span style={{ width: '60%', color: 'var(--color-text-main)', fontWeight: 600 }}>{value}</span>
+        <div className="specs-table" style={{ maxWidth: '600px' }}>
+          {Object.entries(product.specifications).map(([key, value]) => (
+            <div key={key} className="specs-row">
+              <span className="specs-label">{key}</span>
+              <span className="specs-value">{value}</span>
             </div>
           ))}
         </div>

@@ -221,22 +221,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           <h3 style={{ fontSize: '14px', textTransform: 'uppercase', textAlign: 'center', letterSpacing: '0.1em', color: 'var(--color-text-muted)', marginBottom: '30px', fontWeight: 800 }}>
             POPULARNI BRENDOVI
           </h3>
-          <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+          <div className="brands-logo-container">
             {brandLogos.map((logo, idx) => (
               <img 
                 key={idx} 
                 src={logo} 
                 alt="Brand logo" 
-                style={{ 
-                  maxHeight: '44px', 
-                  maxWidth: '120px', 
-                  objectFit: 'contain', 
-                  opacity: 0.6, 
-                  transition: 'opacity 0.2s',
-                  cursor: 'pointer' 
-                }} 
-                onMouseEnter={(e)=>e.currentTarget.style.opacity='1'}
-                onMouseLeave={(e)=>e.currentTarget.style.opacity='0.6'}
+                className="brand-logo-img"
               />
             ))}
           </div>
