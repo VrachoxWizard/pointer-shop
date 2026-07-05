@@ -7,6 +7,7 @@ import { CookieBanner } from './components/CookieBanner';
 import { PromoPopup } from './components/PromoPopup';
 import { Toast } from './components/Toast';
 import { CartDrawer } from './components/CartDrawer';
+import { Cursor } from './components/Cursor';
 
 // Pages
 import { Home } from './pages/Home';
@@ -130,7 +131,7 @@ export const App: React.FC = () => {
       <Header currentRoute={route} onNavigate={navigateWithHashUpdate} />
 
       {/* Main Page Content */}
-      <main className="main-content">
+      <main className="main-content route-transition" key={route}>
         {renderPage()}
       </main>
 
@@ -141,6 +142,7 @@ export const App: React.FC = () => {
       <MobileNavbar currentRoute={route} onNavigate={navigateWithHashUpdate} />
 
       {/* Modals & Overlays */}
+      <Cursor />
       <QuickViewModal />
       <CookieBanner />
       <PromoPopup />

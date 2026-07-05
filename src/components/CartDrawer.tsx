@@ -22,6 +22,9 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
     <div 
       className="cart-drawer-overlay"
       onClick={(e) => { if (e.target === e.currentTarget) closeCartDrawer(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="cart-drawer-title"
     >
       <div className="cart-drawer-panel">
         
@@ -38,10 +41,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <ShoppingBag size={18} style={{ color: 'var(--color-accent)' }} />
-            <h3 style={{ fontSize: '18px', color: 'var(--color-neutral-dark)' }}>Košarica</h3>
+            <h3 id="cart-drawer-title" style={{ fontSize: '18px', color: 'var(--color-neutral-dark)' }}>Košarica</h3>
           </div>
           <button 
             onClick={closeCartDrawer}
+            aria-label="Zatvori košaricu"
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-neutral-dark)' }}
           >
             <X size={20} />
@@ -91,6 +95,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                   <div style={{ display: 'flex', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', width: '80px', height: '24px', marginTop: '4px' }}>
                     <button 
                       onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                      aria-label="Smanji količinu"
                       style={{ width: '24px', border: 'none', background: 'white', cursor: 'pointer', fontSize: '10px', fontWeight: 'bold' }}
                     >
                       -
@@ -100,6 +105,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                     </div>
                     <button 
                       onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                      aria-label="Povećaj količinu"
                       style={{ width: '24px', border: 'none', background: 'white', cursor: 'pointer', fontSize: '10px', fontWeight: 'bold' }}
                     >
                       +
@@ -113,6 +119,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                   </div>
                   <button 
                     onClick={() => removeFromCart(item.product.id)}
+                    aria-label={`Ukloni ${item.product.name} iz košarice`}
                     style={{ background: 'none', border: 'none', color: '#E57373', cursor: 'pointer' }}
                   >
                     <Trash2 size={15} />

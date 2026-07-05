@@ -235,6 +235,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             {/* Theme Toggle Switch */}
             <button 
               onClick={toggleTheme}
+              aria-label={theme === 'light' ? "Aktiviraj tamni način rada" : "Aktiviraj svijetli način rada"}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', display: 'flex', alignItems: 'center' }}
               title={theme === 'light' ? 'Tamni način rada' : 'Svijetli način rada'}
             >
@@ -244,6 +245,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             {/* Search Toggle */}
             <button 
               onClick={handleToggleSearch}
+              aria-label="Pretraži trgovinu"
+              aria-expanded={isSearchOpen}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)' }}
               title="Traži"
             >
@@ -253,6 +256,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             {/* Wishlist */}
             <button 
               onClick={() => onNavigate('account')}
+              aria-label={`Lista želja, ${wishlist.length} proizvoda`}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', position: 'relative' }}
               title="Lista želja"
             >
@@ -281,6 +285,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             {/* Account */}
             <button 
               onClick={() => onNavigate('account')}
+              aria-label="Moj račun"
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)' }}
               title="Moj Račun"
             >
@@ -290,6 +295,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             {/* Cart Icon */}
             <button 
               onClick={openCartDrawer}
+              aria-label={`Košarica, ${cartCount} proizvoda`}
+              aria-haspopup="dialog"
               style={{ 
                 background: 'none', 
                 border: 'none', 
@@ -327,6 +334,8 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             <button 
               className="mobile-menu-toggle"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Glavni izbornik"
+              aria-expanded={isMobileMenuOpen}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)', display: 'none' }}
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}

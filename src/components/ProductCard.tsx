@@ -11,6 +11,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, wishlist, toggleWishlist, openQuickView } = useShop();
   const [hovered, setHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - left - width / 2) / 20;
+    const y = (e.clientY - top - height / 2) / 20;
+    setTilt({ x: -y, y: x });
+  };
+
+  const handleMouseLeave = () => {
+    setHovered(false);
+    setTilt({ x: 0, y: 0 });
+  };
 
   const isFavorited = wishlist.includes(product.id);
   const hasSale = product.originalPrice && product.originalPrice > product.price;
@@ -30,7 +43,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div 
       className="product-card animate-fade-in"
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseLeave={handleMouseLeave}
+      onMouseMove={handleMouseMove}
       style={{
         backgroundColor: 'var(--color-bg-card)',
         borderRadius: 'var(--radius-md)',
@@ -38,7 +52,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${hovered ? 1.02 : 1})`,
+        transition: hovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease-out',
+        transformStyle: 'preserve-3d',
+        zIndex: hovered ? 2 : 1
       }}
     >
       {/* Badges Overlay */}
@@ -57,6 +75,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Wishlist Overlay Button */}
       <button
         onClick={() => toggleWishlist(product.id)}
+        aria-label={isFavorited ? "Ukloni iz popisa želja" : "Dodaj u popis želja"}
         style={{
           position: 'absolute',
           top: '16px',
@@ -102,6 +121,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img 
           src={hovered ? hoverImage : primaryImage} 
           alt={product.name}
+          loading="lazy"
           style={{
             maxHeight: '100%',
             maxWidth: '100%',

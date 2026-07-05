@@ -45,6 +45,10 @@
   --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Universal Resets */
 * {
   box-sizing: border-box;
@@ -120,26 +124,26 @@ a {
 .container {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 clamp(16px, 5vw, 40px);
   width: 100%;
 }
 
 .grid-cols-4 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 28px;
+  gap: clamp(16px, 3vw, 32px);
 }
 
 .grid-cols-3 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 32px;
+  gap: clamp(20px, 4vw, 40px);
 }
 
 .grid-cols-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
+  gap: clamp(24px, 5vw, 48px);
 }
 
 /* Animations Keyframes */
@@ -179,6 +183,22 @@ a {
 
 .animate-scale-in {
   animation: scaleIn var(--transition-normal) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.route-transition {
+  animation: routeEnter var(--transition-normal) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes routeEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Glassmorphism components */

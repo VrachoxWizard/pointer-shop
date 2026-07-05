@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
+import { Reveal } from '../components/Reveal';
 import { CATEGORIES } from '../data/products';
 import { Grid, List, SlidersHorizontal, Search } from 'lucide-react';
 
@@ -333,42 +334,46 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
               </button>
             </div>
           ) : viewMode === 'grid' ? (
-            <div className="grid-cols-3">
-              {sortedProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <Reveal delay={0.1}>
+              <div className="grid-cols-3">
+                {sortedProducts.map(product => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            </Reveal>
           ) : (
             /* List Layout */
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {sortedProducts.map(product => (
-                <div 
-                  key={product.id}
-                  style={{
-                    backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', gap: '20px'
-                  }}
-                >
-                  <div style={{ width: '120px', height: '120px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img src={product.images[0]} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                  </div>
-                  <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>{product.brand}</span>
-                    <h3 style={{ fontSize: '16px', color: 'var(--color-text-main)', margin: '4px 0 8px' }}>{product.name}</h3>
-                    <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '12px' }}>{product.description}</p>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
-                      <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-primary)' }}>€{product.price.toFixed(2)}</span>
-                      {product.originalPrice && (
-                        <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>€{product.originalPrice.toFixed(2)}</span>
-                      )}
+            <Reveal delay={0.1}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {sortedProducts.map(product => (
+                  <div 
+                    key={product.id}
+                    style={{
+                      backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', gap: '20px'
+                    }}
+                  >
+                    <div style={{ width: '120px', height: '120px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img src={product.images[0]} alt={product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                    </div>
+                    <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--color-text-muted)', fontWeight: 700, letterSpacing: '0.05em' }}>{product.brand}</span>
+                      <h3 style={{ fontSize: '16px', color: 'var(--color-text-main)', margin: '4px 0 8px' }}>{product.name}</h3>
+                      <p style={{ fontSize: '13px', color: 'var(--color-text-muted)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginBottom: '12px' }}>{product.description}</p>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginTop: 'auto' }}>
+                        <span style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-primary)' }}>€{product.price.toFixed(2)}</span>
+                        {product.originalPrice && (
+                          <span style={{ fontSize: '12px', color: 'var(--color-text-muted)', textDecoration: 'line-through' }}>€{product.originalPrice.toFixed(2)}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px' }}>
+                      <button onClick={() => useShop().addToCart(product.id, 1)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', whiteSpace: 'nowrap' }}>Dodaj u košaricu</button>
+                      <button onClick={() => useShop().openQuickView(product)} className="btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', border: '1px solid var(--color-primary)', whiteSpace: 'nowrap' }}>Brzi pregled</button>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px' }}>
-                    <button onClick={() => useShop().addToCart(product.id, 1)} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', whiteSpace: 'nowrap' }}>Dodaj u košaricu</button>
-                    <button onClick={() => useShop().openQuickView(product)} className="btn-secondary" style={{ padding: '6px 16px', fontSize: '13px', border: '1px solid var(--color-primary)', whiteSpace: 'nowrap' }}>Brzi pregled</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </Reveal>
           )}
 
         </div>
