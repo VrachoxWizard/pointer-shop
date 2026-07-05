@@ -70,7 +70,13 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const showToast = (title: string, message: string, image?: string) => {
     const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { id, title, message, image }]);
+    setToasts((prev) => {
+      const newToasts = [...prev, { id, title, message, image }];
+      if (newToasts.length > 3) {
+        return newToasts.slice(newToasts.length - 3);
+      }
+      return newToasts;
+    });
     
     // Auto remove after 4 seconds
     setTimeout(() => {

@@ -1,0 +1,448 @@
+/* ═══════════════════════════════════════════════════════════════
+   POINTER DESIGN SYSTEM — BASE STYLES
+   Layout utilities, animations, glassmorphism, buttons, forms.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Layout Utilities ── */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 clamp(16px, 5vw, 40px);
+  width: 100%;
+}
+
+.grid-cols-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.grid-cols-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: clamp(20px, 4vw, 40px);
+}
+
+.grid-cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(24px, 5vw, 48px);
+}
+
+.col-span-2 {
+  grid-column: span 2;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex-grow: 1;
+}
+
+/* ── Animations & Keyframes ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.97); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+/* Global spin keyframe (consolidated — removed from individual components) */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatBadge {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes popupFade {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-normal) forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp var(--transition-normal) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-normal) cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-popup-fade {
+  animation: popupFade 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animated-badge {
+  animation: floatBadge 3s ease-in-out infinite;
+}
+
+.route-transition {
+  animation: fadeInUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ── Shimmer loader ── */
+.shimmer-bg {
+  background: linear-gradient(90deg, #E6E8E2 25%, #F0F2EB 50%, #E6E8E2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+[data-theme="dark"] .shimmer-bg {
+  background: linear-gradient(90deg, #1C2216 25%, #252D1E 50%, #1C2216 75%);
+}
+
+
+/* ── Glassmorphism ── */
+.glassmorphism {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), var(--shadow-md);
+}
+
+.glassmorphism-dark {
+  background: var(--glass-bg-dark);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border-dark);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), var(--shadow-md);
+}
+
+[data-theme="dark"] .glassmorphism {
+  background-color: rgba(23, 27, 18, 0.9) !important;
+}
+
+/* ── Text Effects ── */
+.text-gradient-copper {
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent) 50%, var(--color-accent-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+/* ── Badges ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  font-family: var(--font-heading);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.1em;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-new {
+  background-color: var(--color-primary-light);
+  color: var(--color-neutral-light);
+}
+
+.badge-sale {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.badge-backorder {
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning);
+}
+
+.badge-instock {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+/* ── Buttons ── */
+.btn-primary {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.03em;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(224, 108, 0, 0.25);
+  transition: all var(--transition-normal);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-hover) 100%);
+  z-index: -1;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(224, 108, 0, 0.4);
+}
+
+.btn-primary:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.btn-primary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+.btn-primary:disabled {
+  background-color: var(--color-neutral-border);
+  color: var(--color-neutral-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-primary:disabled::after {
+  display: none;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0.03em;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all var(--transition-normal);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(58, 63, 29, 0.15);
+}
+
+.btn-secondary:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ── Button Shimmer Effect ── */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::before {
+  animation: shimmerSweep 0.8s ease;
+}
+
+@keyframes shimmerSweep {
+  100% { left: 150%; }
+}
+
+/* ── Form Inputs ── */
+.input-field {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-card);
+  transition: var(--transition-fast);
+  outline: none;
+  font-size: var(--text-base);
+  color: var(--color-neutral-dark);
+}
+
+.input-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(58, 63, 29, 0.1);
+}
+
+/* ── Custom Range Slider ── */
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--color-neutral-border);
+  border-radius: var(--radius-full);
+  outline: none;
+  margin: 10px 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  cursor: pointer;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid white;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: var(--color-accent);
+}
+
+/* ── Form Feedback ── */
+.form-feedback {
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideUp var(--transition-normal) forwards;
+}
+
+.form-feedback.success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success-border);
+}
+
+.form-feedback.error {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error-border);
+}
+
+/* ── Hover Utilities (NEW — replaces inline JS hover handlers) ── */
+.hover-accent:hover {
+  color: var(--color-accent) !important;
+}
+
+.hover-white:hover {
+  color: white !important;
+}
+
+.hover-underline:hover {
+  text-decoration: underline;
+}
+
+/* ── Page Hero Header (Shared for Contact, About Us, etc.) ── */
+.page-hero {
+  background: linear-gradient(135deg, var(--color-neutral-slate) 0%, var(--color-neutral-dark) 100%);
+  color: white;
+  padding: 60px 20px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle at top right, rgba(255,255,255,0.05) 0%, transparent 40%),
+                    radial-gradient(circle at bottom left, rgba(242,110,0,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ── Responsive Grid ── */
+@media (max-width: 900px) {
+  .grid-cols-3 {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .grid-cols-4 {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-cols-2 {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .col-span-2 {
+    grid-column: span 1;
+  }
+  .page-hero {
+    padding: 40px 20px;
+  }
+}

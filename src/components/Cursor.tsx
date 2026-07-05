@@ -28,18 +28,35 @@ export const Cursor: React.FC = () => {
       const target = e.target as HTMLElement;
       if (!target) return;
       
-      // Check if hovering over clickable elements
+      const tagName = target.tagName.toLowerCase();
+      // Fast path tag/class check
       if (
-        window.getComputedStyle(target).cursor === 'pointer' ||
-        target.tagName.toLowerCase() === 'a' ||
-        target.tagName.toLowerCase() === 'button' ||
+        tagName === 'a' ||
+        tagName === 'button' ||
+        tagName === 'input' ||
+        tagName === 'select' ||
+        tagName === 'textarea' ||
+        target.role === 'button' ||
+        target.classList.contains('btn') ||
+        target.classList.contains('clickable') ||
         target.closest('a') ||
         target.closest('button')
       ) {
         setIsPointer(true);
-      } else {
-        setIsPointer(false);
+        return;
       }
+      
+      // Fallback only if tag check fails
+      try {
+        const computedCursor = window.getComputedStyle(target).cursor;
+        if (computedCursor === 'pointer') {
+          setIsPointer(true);
+          return;
+        }
+      } catch (err) {
+        // Fallback
+      }
+      setIsPointer(false);
     };
 
     const onMouseLeave = () => setIsHidden(true);

@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Product } from '../data/products';
 import { useShop } from '../context/ShopContext';
 import { Heart, Eye, ShoppingCart } from 'lucide-react';
@@ -9,30 +10,48 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart, wishlist, toggleWishlist, openQuickView } = useShop();
+  const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
+  const rectRef = useRef<DOMRect | null>(null);
+
+  const handleMouseEnter = () => {
+    setHovered(true);
+    if (cardRef.current) {
+      rectRef.current = cardRef.current.getBoundingClientRect();
+    }
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - left - width / 2) / 35;
-    const y = (e.clientY - top - height / 2) / 35;
+    if (!cardRef.current || !rectRef.current) return;
+    const { left, top, width, height } = rectRef.current;
+    const x = (e.clientX - left - width / 2) / (width / 2);
+    const y = (e.clientY - top - height / 2) / (height / 2);
     
-    // Direct DOM manipulation of transform for optimal performance
-    cardRef.current.style.transition = 'transform 0.08s ease-out';
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${-y}deg) rotateY(${x}deg) scale(1.01)`;
-    cardRef.current.style.zIndex = '2';
+    const rotateX = y * -6;
+    const rotateY = x * 6;
+    
+    requestAnimationFrame(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+        cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.015, 1.015, 1.015)`;
+        cardRef.current.style.zIndex = '2';
+      }
+    });
   };
 
   const handleMouseLeave = () => {
     setHovered(false);
-    if (cardRef.current) {
-      cardRef.current.style.transition = 'transform 0.4s ease-out';
-      cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
-      cardRef.current.style.zIndex = '1';
-    }
+    rectRef.current = null;
+    requestAnimationFrame(() => {
+      if (cardRef.current) {
+        cardRef.current.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+        cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        cardRef.current.style.zIndex = '1';
+      }
+    });
   };
 
   const isFavorited = wishlist.includes(product.id);
@@ -52,7 +71,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     <div 
       ref={cardRef}
       className="product-card-wrap animate-fade-in"
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onMouseMove={handleMouseMove}
     >
@@ -85,7 +104,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       {/* Image Gallery Wrap */}
       <div 
         className="card-image-gallery-wrapper"
-        onClick={() => window.location.hash = `#/product/${product.id}`}
+        onClick={() => navigate(`/product/${product.id}`)}
         style={{ cursor: 'pointer' }}
       >
         <img 
@@ -98,38 +117,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {hovered && (
           <button 
             type="button"
-            className="animate-fade-in"
+            className="card-quick-view-btn animate-fade-in"
             onClick={(e) => {
               e.stopPropagation(); // Prevent navigating to detail page
               openQuickView(product);
-            }}
-            style={{
-              position: 'absolute',
-              bottom: '12px',
-              background: 'var(--glass-bg-dark)',
-              backdropFilter: 'blur(12px)',
-              border: '1px solid var(--glass-border-dark)',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-full)',
-              fontSize: '12px',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              boxShadow: '0 8px 16px rgba(0,0,0,0.15)',
-              transform: 'translateY(0)',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              zIndex: 10
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--color-primary-light)';
-              e.currentTarget.style.transform = 'scale(1.05)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--glass-bg-dark)';
-              e.currentTarget.style.transform = 'scale(1)';
             }}
           >
             <Eye size={14} /> Brzi Pregled
@@ -144,7 +135,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         </span>
         
         <h3 
-          onClick={() => window.location.hash = `#/product/${product.id}`}
+          onClick={() => navigate(`/product/${product.id}`)}
           className="card-title-heading"
           style={{ cursor: 'pointer' }}
         >
@@ -175,7 +166,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             'Nije dostupno'
           ) : isAdding ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="spinner" style={{ width: '12px', height: '12px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></span>
+              <span className="spinner" style={{ width: '12px', height: '12px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 1s linear infinite' }}></span>
               Dodavanje...
             </span>
           ) : (
@@ -185,13 +176,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
         </button>
       </div>
-      
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };

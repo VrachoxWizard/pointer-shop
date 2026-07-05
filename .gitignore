@@ -24,3 +24,4 @@ dist-ssr
 
 # Agent files
 .agents/
+.agent/

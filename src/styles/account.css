@@ -1,0 +1,26 @@
+/* ═══════════════════════════════════════════════════════════════
+   ACCOUNT & PROFILE PAGE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.account-layout {
+  display: flex;
+  gap: 30px;
+}
+
+.account-menu {
+  width: 220px;
+  flex-shrink: 0;
+}
+
+.account-content {
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .account-layout {
+    flex-direction: column !important;
+  }
+  .account-menu {
+    width: 100% !important;
+  }
+}

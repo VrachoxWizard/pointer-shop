@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { Heart, ArrowLeft, Shield, Truck, Calendar } from 'lucide-react';
+import { Breadcrumb } from '../components/Breadcrumb';
 
-interface ProductDetailProps {
-  productId: string;
-  onNavigate: (route: string) => void;
-}
-
-export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavigate }) => {
+export const ProductDetail: React.FC = () => {
+  const { id: productId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { products, addToCart, wishlist, toggleWishlist } = useShop();
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -17,20 +16,36 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
+  const galleryRectRef = useRef<DOMRect | null>(null);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsZoomed(true);
+    galleryRectRef.current = e.currentTarget.getBoundingClientRect();
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+    setZoomPos({ x: 50, y: 50 });
+    galleryRectRef.current = null;
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    if (!galleryRectRef.current) {
+      galleryRectRef.current = e.currentTarget.getBoundingClientRect();
+    }
+    const { left, top, width, height } = galleryRectRef.current;
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
     setZoomPos({ x, y });
   };
 
-  const product = products.find(p => p.id === productId) || products[0];
+  const product = products.find(p => p.id === productId);
 
   if (!product) {
     return (
       <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
         <h2>Proizvod nije pronađen.</h2>
-        <button onClick={() => onNavigate('shop')} className="btn-primary" style={{ marginTop: '20px' }}>Povratak u trgovinu</button>
+        <button onClick={() => navigate('/shop')} className="btn-primary" style={{ marginTop: '20px' }}>Povratak u trgovinu</button>
       </div>
     );
   }
@@ -55,14 +70,24 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
       {/* React 19 Native Document Metadata */}
       <title>{`POINTER | ${product.name}`}</title>
       <meta name="description" content={product.description} />
+
+      {/* Breadcrumbs Navigation */}
+      <Breadcrumb 
+        items={[
+          { label: 'Trgovina', route: '/shop' }, 
+          { label: product.category.toUpperCase(), route: `/shop?category=${product.category}` }, 
+          { label: product.name }
+        ]} 
+      />
+
       {/* Back Button */}
       <button 
-        onClick={() => onNavigate('shop')}
+        onClick={() => navigate(-1)}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'white',
+          background: 'var(--color-bg-card)',
           border: '1px solid var(--color-neutral-border)',
           borderRadius: 'var(--radius-full)',
           padding: '8px 16px',
@@ -74,20 +99,9 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
           boxShadow: 'var(--shadow-sm)',
           transition: 'all var(--transition-fast)'
         }}
-        onMouseEnter={(e)=>{
-          e.currentTarget.style.borderColor='var(--color-accent)';
-          e.currentTarget.style.color='var(--color-accent)';
-          const svg = e.currentTarget.querySelector('svg');
-          if (svg) svg.style.transform = 'translateX(-4px)';
-        }}
-        onMouseLeave={(e)=>{
-          e.currentTarget.style.borderColor='var(--color-neutral-border)';
-          e.currentTarget.style.color='var(--color-neutral-dark)';
-          const svg = e.currentTarget.querySelector('svg');
-          if (svg) svg.style.transform = 'translateX(0)';
-        }}
+        className="btn-back-hover"
       >
-        <ArrowLeft size={14} style={{ transition: 'transform var(--transition-fast)' }} /> Povratak u Katalog
+        <ArrowLeft size={14} /> Povratak
       </button>
 
       {/* Main Details Grid */}
@@ -96,8 +110,8 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
         {/* Left Column: Gallery */}
         <div className="detail-gallery-container detail-gallery-col">
           <div 
-            onMouseEnter={() => setIsZoomed(true)}
-            onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 50, y: 50 }); }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseMove}
             style={{ 
               backgroundColor: 'white', 
@@ -341,13 +355,13 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
         {activeTab === 'delivery' && (
           <div className="tab-panel-premium">
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-              <div style={{ backgroundColor: '#F8F9F5', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-border)' }}>
+              <div style={{ backgroundColor: 'var(--color-bg-card)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-border)' }}>
                 <strong style={{ color: 'var(--color-primary)', display: 'block', fontSize: '16px', marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>Brza Dostava</strong>
                 <p style={{ fontSize: '13.5px', color: 'var(--color-neutral-slate)', lineHeight: '1.7' }}>
                   Besplatna dostava za sve narudžbe iznad 150 € unutar cijele Hrvatske. Za narudžbe manje vrijednosti dostava se naplaćuje 7,00 €. Isporuka se vrši u roku od 3-5 radnih dana putem ovlaštene kurirske službe.
                 </p>
               </div>
-              <div style={{ backgroundColor: '#F8F9F5', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-border)' }}>
+              <div style={{ backgroundColor: 'var(--color-bg-card)', padding: '24px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-neutral-border)' }}>
                 <strong style={{ color: 'var(--color-primary)', display: 'block', fontSize: '16px', marginBottom: '8px', fontFamily: 'var(--font-heading)' }}>Jamstvo Povrata i Kvalitete</strong>
                 <p style={{ fontSize: '13.5px', color: 'var(--color-neutral-slate)', lineHeight: '1.7' }}>
                   Kupujte bez rizika s našim 14-dnevnim pravom na jednostrani raskid ugovora. Ako niste potpuno zadovoljni proizvodom, vratite ga u originalnoj ambalaži za puni povrat novca. Jamstvo na sve tehničke komponente iznosi 24 mjeseca.

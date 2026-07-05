@@ -1,0 +1,327 @@
+/* ═══════════════════════════════════════════════════════════════
+   TOAST, CURSOR, MOBILE NAVBAR & COOKIE BANNER STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Toast Notifications ── */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast-alert {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: var(--color-bg-card);
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-neutral-border);
+  box-shadow: 0 10px 30px rgba(18, 20, 15, 0.12);
+  width: 320px;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.toast-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.toast-content {
+  flex-grow: 1;
+}
+
+.toast-title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+  margin-bottom: 2px;
+}
+
+.toast-msg {
+  font-size: var(--text-xs);
+  color: var(--color-neutral-muted);
+}
+
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-neutral-muted);
+  cursor: pointer;
+  display: flex;
+  padding: 4px;
+  transition: color var(--transition-fast);
+}
+
+.toast-close-btn:hover {
+  color: var(--color-neutral-dark);
+}
+
+/* ── Custom Cursor ── */
+.custom-cursor-outer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  border: 1.5px solid var(--color-accent) !important;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+.custom-cursor-inner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--color-accent) !important;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: var(--z-cursor);
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+/* ── Mobile Bottom Navbar ── */
+.mobile-bottom-navbar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-sticky);
+  background-color: var(--color-bg-card);
+  border-top: 1px solid var(--color-neutral-border);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+}
+
+.mobile-bottom-navbar-inner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.mobile-nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--color-neutral-muted);
+  font-size: 10px;
+  font-weight: 600;
+  position: relative;
+}
+
+.mobile-nav-btn.active {
+  color: var(--color-accent);
+}
+
+.mobile-nav-btn:hover {
+  color: var(--color-accent);
+}
+
+.mobile-nav-badge {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  background-color: var(--color-accent);
+  color: white;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  font-size: 8px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-navbar {
+    display: block;
+  }
+}
+
+/* ── Cookie Banner ── */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-popover);
+  background-color: var(--color-bg-card);
+  border-top: 1px solid var(--color-neutral-border);
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px var(--space-lg);
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.cookie-banner-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cookie-banner-text {
+  font-size: var(--text-sm);
+  color: var(--color-neutral-muted);
+  flex: 1;
+  min-width: 200px;
+}
+
+.cookie-banner-text a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.cookie-banner-text a:hover {
+  text-decoration: underline;
+}
+
+.cookie-banner-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cookie-accept-btn {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.cookie-accept-btn:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
+.cookie-decline-btn {
+  background: none;
+  border: 1px solid var(--color-neutral-border);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  color: var(--color-neutral-muted);
+  transition: all var(--transition-fast);
+}
+
+.cookie-decline-btn:hover {
+  border-color: var(--color-neutral-muted);
+  color: var(--color-neutral-dark);
+}
+
+@media (max-width: 768px) {
+  .cookie-banner {
+    bottom: 60px; /* above mobile navbar */
+  }
+  .cookie-banner-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* ── Scroll To Top Button ── */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: white;
+  border: 1px solid var(--color-primary-light);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: var(--z-sticky);
+  transition: transform var(--transition-fast), background-color var(--transition-fast), opacity var(--transition-fast), visibility var(--transition-fast);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+}
+
+.scroll-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.scroll-to-top-btn:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent-light);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.scroll-to-top-btn:active {
+  transform: translateY(0) scale(0.97);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-top-btn {
+    bottom: 76px; /* Place above the mobile bottom navbar */
+    right: 16px;
+  }
+}
+
+/* ── Interactive Back Button Hover ── */
+.btn-back-hover {
+  transition: all var(--transition-fast) ease-in-out !important;
+}
+
+.btn-back-hover:hover {
+  border-color: var(--color-accent) !important;
+  color: var(--color-accent) !important;
+}
+
+.btn-back-hover:hover svg {
+  transform: translateX(-4px) !important;
+}
+
+/* ── Hover Accent Utility ── */
+.hover-accent {
+  transition: color var(--transition-fast) ease-in-out, border-color var(--transition-fast) ease-in-out;
+}
+
+.hover-accent:hover {
+  color: var(--color-accent) !important;
+}
+
+

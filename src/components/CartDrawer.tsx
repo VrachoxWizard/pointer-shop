@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { X, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
-interface CartDrawerProps {
-  onNavigate: (route: string) => void;
-}
-
-export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
+export const CartDrawer: React.FC = () => {
   const { isCartDrawerOpen, closeCartDrawer, cart, updateQuantity, removeFromCart } = useShop();
+  const navigate = useNavigate();
+
+  // Scroll lock effect
+  useEffect(() => {
+    if (isCartDrawerOpen) {
+      document.body.classList.add('scroll-locked');
+    } else {
+      document.body.classList.remove('scroll-locked');
+    }
+    return () => {
+      document.body.classList.remove('scroll-locked');
+    };
+  }, [isCartDrawerOpen]);
 
   if (!isCartDrawerOpen) return null;
 
@@ -15,7 +25,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
 
   const handleCheckoutClick = () => {
     closeCartDrawer();
-    onNavigate('cart');
+    navigate('/cart');
   };
 
   return (
@@ -50,7 +60,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
               <ShoppingBag size={48} style={{ margin: '0 auto 16px', opacity: 0.4 }} />
               <p style={{ fontSize: '14px' }}>Vaša košarica je trenutno prazna.</p>
               <button 
-                onClick={() => { closeCartDrawer(); onNavigate('shop'); }} 
+                onClick={() => { closeCartDrawer(); navigate('/shop'); }} 
                 className="btn-secondary" 
                 style={{ marginTop: '16px', fontSize: '12px', padding: '8px 16px' }}
               >
@@ -70,7 +80,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                 <div className="drawer-item-details">
                   <div 
                     style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-neutral-dark)', cursor: 'pointer' }}
-                    onClick={() => { closeCartDrawer(); onNavigate(`product/${item.product.id}`); }}
+                    onClick={() => { closeCartDrawer(); navigate(`/product/${item.product.id}`); }}
                   >
                     {item.product.name}
                   </div>
@@ -103,7 +113,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
                   <button 
                     onClick={() => removeFromCart(item.product.id)}
                     aria-label={`Ukloni ${item.product.name} iz košarice`}
-                    style={{ background: 'none', border: 'none', color: '#E57373', cursor: 'pointer' }}
+                    style={{ background: 'none', border: 'none', color: 'var(--color-error-light)', cursor: 'pointer' }}
                   >
                     <Trash2 size={15} />
                   </button>
@@ -144,3 +154,4 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onNavigate }) => {
     </div>
   );
 };
+

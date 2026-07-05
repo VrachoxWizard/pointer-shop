@@ -1,4 +1,5 @@
 import React from 'react';
+import { PageHeader } from '../components/PageHeader';
 
 export const PrivacyPolicy: React.FC = () => {
   return (
@@ -8,11 +9,14 @@ export const PrivacyPolicy: React.FC = () => {
       <title>POINTER | Pravila Privatnosti</title>
       <meta name="description" content="Pravila privatnosti i zaštita osobnih podataka." />
 
-      <h1 style={{ fontSize: '28px', color: 'var(--color-primary)', marginBottom: '30px', borderBottom: '2px solid var(--color-primary)', paddingBottom: '12px' }}>
-        Pravila Privatnosti
-      </h1>
+      {/* Reusable PageHeader with Breadcrumbs */}
+      <PageHeader 
+        title="Pravila Privatnosti" 
+        subtitle="Saznajte kako prikupljamo, obrađujemo i štitimo vaše osobne podatke."
+        breadcrumbs={[{ label: 'Pravila privatnosti' }]}
+      />
 
-      <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '36px', display: 'flex', flexDirection: 'column', gap: '20px', lineHeight: '1.8' }}>
+      <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '36px', display: 'flex', flexDirection: 'column', gap: '20px', lineHeight: '1.8' }}>
         <p style={{ fontWeight: 'bold' }}>
           Ova pravila privatnosti objašnjavaju kako lovačka trgovina POINTER prikuplja, obrađuje i štiti Vaše osobne podatke pri korištenju ove web stranice.
         </p>

@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { Reveal } from '../components/Reveal';
 import { ArrowRight, Flame } from 'lucide-react';
 
-interface HomeProps {
-  onNavigate: (route: string) => void;
-}
-
-export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
+export const Home: React.FC = () => {
   const { products } = useShop();
-  const [offsetY, setOffsetY] = useState(0);
+  const heroImageRef = useRef<HTMLImageElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setOffsetY(window.scrollY);
+    const handleScroll = () => {
+      if (heroImageRef.current) {
+        heroImageRef.current.style.transform = `translateY(${window.scrollY * 0.3}px)`;
+      }
+    };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -41,8 +43,9 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
 
       {/* Hero Banner Section */}
       <Reveal duration={0.8} direction="none">
-        <section className="hero-banner-wrap" onClick={() => onNavigate('shop')}>
+        <section className="hero-banner-wrap" onClick={() => navigate('/shop')}>
           <img 
+            ref={heroImageRef}
             src="/images/2-5.png" 
             alt="Leupold Banner" 
             style={{ 
@@ -50,7 +53,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               height: '120%', 
               display: 'block', 
               objectFit: 'cover',
-              transform: `translateY(${offsetY * 0.3}px)`,
+              transform: 'translateY(0px)',
               willChange: 'transform'
             }}
           />
@@ -72,7 +75,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       <Reveal delay={0.1}>
         <section style={{ margin: '40px 0' }} className="container">
           <div 
-            onClick={() => onNavigate('shop?category=odjeca')}
+            onClick={() => navigate('/shop?category=odjeca')}
             className="secondary-banner-wrap"
           >
             <img 
@@ -103,13 +106,13 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           {/* Tier 1 Grid */}
           <div className="grid-cols-3" style={{ marginBottom: '24px' }}>
             {[
-              { name: 'Dugo Oružje', img: '/images/1-1-rh9qc00uywzq8843qijnicwnpnvxyljp8p4opwib4g.jpg', link: 'shop?category=oruzje&sub=Dugo%20oru%C5%BEje', span: true },
-              { name: 'Moderno Oružje', img: '/images/hk-rheqfsuprstrre14w695x6zef623o7sc0j64gawukw.png', link: 'shop?category=oruzje&sub=Moderno%20oru%C5%BEje' },
-              { name: 'Kratko Oružje', img: '/images/2-1-rh9qc3s7q94vinyn4k65sbyi37detdyml7qmn0cqfk.jpg', link: 'shop?category=oruzje&sub=Kratko%20oru%C5%BEje' }
+              { name: 'Dugo Oružje', img: '/images/1-1-rh9qc00uywzq8843qijnicwnpnvxyljp8p4opwib4g.jpg', link: '/shop?category=oruzje&sub=Dugo%20oru%C5%BEje', span: true },
+              { name: 'Moderno Oružje', img: '/images/hk-rheqfsuprstrre14w695x6zef623o7sc0j64gawukw.png', link: '/shop?category=oruzje&sub=Moderno%20oru%C5%BEje' },
+              { name: 'Kratko Oružje', img: '/images/2-1-rh9qc3s7q94vinyn4k65sbyi37detdyml7qmn0cqfk.jpg', link: '/shop?category=oruzje&sub=Kratko%20oru%C5%BEje' }
             ].map(item => (
               <div 
                 key={item.name} 
-                onClick={() => onNavigate(item.link)}
+                onClick={() => navigate(item.link)}
                 className={`category-card ${item.span ? 'col-span-2' : ''}`}
                 style={{ height: '220px', border: '1px solid var(--color-border)' }}
               >
@@ -131,18 +134,18 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           {/* Tier 2 Grid */}
           <div className="grid-cols-4">
             {[
-              { name: 'Jakne', img: '/images/1-2-rh9p0gcr9lwkyb6edgo0vuu9z08jlrshpd5ht107v4.jpg', link: 'shop?category=odjeca&sub=Jakne' },
-              { name: 'Hlače', img: '/images/2-3-rh9pgwj2v8f84na8bkmzipeo7r5sb33dys5e5cm6z4.jpg', link: 'shop?category=odjeca&sub=Hla%C4%8De' },
-              { name: 'Čizme', img: '/images/3-4-rh9ph33y72o8dx0o95hdi5qwdg9csytibopsiacfrk.jpg', link: 'shop?category=obuca&sub=%C4%8Cizme' },
-              { name: 'Torbe i Ruksaci', img: '/images/4-rh9p0370lxekfrpiiaz8wy5tnm1em0c8zk0p35jqa8.jpg', link: 'shop?category=oprema&sub=Ruksaci%20i%20torbe' },
-              { name: 'Optike', img: '/images/5-2-rh9phk11m3be6wc3icsnr1h72dxyniooe0gj59ncnk.jpg', link: 'shop?category=oprema&sub=Optike' },
-              { name: 'Crvene točke', img: '/images/6-1-rh9phpo2r3j44k3wlf8f601ymp65xpb2esdg0xezm8.jpg', link: 'shop?category=oprema&sub=Optike' },
-              { name: 'Noževi', img: '/images/7-1-rh9phz2gnfvzcnq92jaouxokkjvu2ocds2watp11w0.jpg', link: 'shop?category=oprema&sub=No%C5%BEevi' },
-              { name: 'Futrole', img: '/images/8-1-rkn25blagsi9fabkuxw1j247lpffwqoykz97yl8fdc.jpg', link: 'shop?category=oruzje&sub=Futrole%20i%20navlake' }
+              { name: 'Jakne', img: '/images/1-2-rh9p0gcr9lwkyb6edgo0vuu9z08jlrshpd5ht107v4.jpg', link: '/shop?category=odjeca&sub=Jakne' },
+              { name: 'Hlače', img: '/images/2-3-rh9pgwj2v8f84na8bkmzipeo7r5sb33dys5e5cm6z4.jpg', link: '/shop?category=odjeca&sub=Hla%C4%8De' },
+              { name: 'Čizme', img: '/images/3-4-rh9ph33y72o8dx0o95hdi5qwdg9csytibopsiacfrk.jpg', link: '/shop?category=obuca&sub=%C4%8Cizme' },
+              { name: 'Torbe i Ruksaci', img: '/images/4-rh9p0370lxekfrpiiaz8wy5tnm1em0c8zk0p35jqa8.jpg', link: '/shop?category=oprema&sub=Ruksaci%20i%20torbe' },
+              { name: 'Optike', img: '/images/5-2-rh9phk11m3be6wc3icsnr1h72dxyniooe0gj59ncnk.jpg', link: '/shop?category=oprema&sub=Optike' },
+              { name: 'Crvene točke', img: '/images/6-1-rh9phpo2r3j44k3wlf8f601ymp65xpb2esdg0xezm8.jpg', link: '/shop?category=oprema&sub=Optike' },
+              { name: 'Noževi', img: '/images/7-1-rh9phz2gnfvzcnq92jaouxokkjvu2ocds2watp11w0.jpg', link: '/shop?category=oprema&sub=No%C5%BEevi' },
+              { name: 'Futrole', img: '/images/8-1-rkn25blagsi9fabkuxw1j247lpffwqoykz97yl8fdc.jpg', link: '/shop?category=oruzje&sub=Futrole%20i%20navlake' }
             ].map(item => (
               <div 
                 key={item.name} 
-                onClick={() => onNavigate(item.link)}
+                onClick={() => navigate(item.link)}
                 className="category-card"
                 style={{ height: '160px', border: '1px solid var(--color-border)' }}
               >
@@ -166,7 +169,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               <Flame size={24} style={{ color: 'var(--color-accent)' }} /> <span className="text-gradient-copper">NOVO U PONUDI</span>
             </h2>
             <button 
-              onClick={() => onNavigate('shop')} 
+              onClick={() => navigate('/shop')} 
               style={{ 
                 background: 'none', 
                 border: 'none', 
@@ -178,8 +181,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                 alignItems: 'center',
                 gap: '4px'
               }}
-              onMouseEnter={(e)=>e.currentTarget.style.textDecoration='underline'}
-              onMouseLeave={(e)=>e.currentTarget.style.textDecoration='none'}
+              className="hover-accent"
             >
               Pregledaj Sve <ArrowRight size={14}/>
             </button>
@@ -233,7 +235,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
             <h2 style={{ fontSize: '24px' }}><span className="text-gradient-copper">NOVO STRELJIVO</span></h2>
             <button 
-              onClick={() => onNavigate('shop?category=streljivo')} 
+              onClick={() => navigate('/shop?category=streljivo')} 
               style={{ 
                 background: 'none', 
                 border: 'none', 
@@ -245,8 +247,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
                 alignItems: 'center',
                 gap: '4px'
               }}
-              onMouseEnter={(e)=>e.currentTarget.style.textDecoration='underline'}
-              onMouseLeave={(e)=>e.currentTarget.style.textDecoration='none'}
+              className="hover-accent"
             >
               Pregledaj Sve <ArrowRight size={14}/>
             </button>

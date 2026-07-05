@@ -1,5 +1,6 @@
 import React from 'react';
 import { Target, Users, ShieldCheck, Wrench, FileCheck } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
 
 export const AboutUs: React.FC = () => {
   return (
@@ -9,15 +10,12 @@ export const AboutUs: React.FC = () => {
       <title>POINTER | O Nama</title>
       <meta name="description" content="Saznajte više o lovačkoj trgovini POINTER. Vaše glavno odredište za lovačko oružje, streljivo i opremu." />
 
-      {/* Hero Header Area */}
-      <div className="page-hero">
-        <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', marginBottom: '16px' }}>
-          O Nama
-        </h1>
-        <p style={{ fontSize: '16px', maxWidth: '600px', margin: '0 auto', color: 'var(--color-neutral-border)', opacity: 0.9 }}>
-          Saznajte tko smo i zašto smo prvi izbor za lovce i strijelce diljem Hrvatske.
-        </p>
-      </div>
+      {/* Reusable PageHeader with Breadcrumbs */}
+      <PageHeader 
+        title="O Nama" 
+        subtitle="Saznajte tko smo i zašto smo prvi izbor za lovce i strijelce diljem Hrvatske."
+        breadcrumbs={[{ label: 'O nama' }]}
+      />
 
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
         

@@ -1,0 +1,248 @@
+/* ═══════════════════════════════════════════════════════════════
+   CART & CHECKOUT WIZARD STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Cart Item Row ── */
+.cart-item-row {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cart-item-row:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.cart-item-thumbnail-small {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.cart-qty-adjustment {
+  display: flex;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background-color: var(--color-bg-card);
+}
+
+.cart-qty-adjustment button {
+  width: 28px;
+  height: 32px;
+  border: none;
+  background: none;
+  color: var(--color-neutral-dark);
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color var(--transition-fast);
+}
+
+.cart-qty-adjustment button:hover {
+  background-color: var(--color-neutral-light);
+}
+
+.cart-qty-adjustment .qty-num {
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-neutral-dark);
+}
+
+.cart-price-column {
+  min-width: 80px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--color-neutral-dark);
+}
+
+/* ── Checkout Steps Stepper ── */
+.checkout-stepper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.checkout-stepper::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-neutral-border);
+  z-index: 1;
+  transform: translateY(-50%);
+}
+
+.stepper-progress-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  z-index: 2;
+  transform: translateY(-50%);
+  transition: width var(--transition-normal);
+}
+
+.stepper-step {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-bg-card);
+  border: 2px solid var(--color-neutral-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--text-base);
+  color: var(--color-neutral-muted);
+  transition: all var(--transition-fast);
+}
+
+.step-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-neutral-muted);
+  transition: color var(--transition-fast);
+}
+
+.stepper-step.active .step-circle {
+  border-color: var(--color-primary);
+  background-color: var(--color-primary);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(58, 63, 29, 0.15);
+}
+
+.stepper-step.active .step-label {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.stepper-step.completed .step-circle {
+  border-color: var(--color-primary);
+  background-color: var(--color-bg-card);
+  color: var(--color-primary);
+}
+
+.stepper-step.completed .step-label {
+  color: var(--color-neutral-dark);
+}
+
+/* ── Checkout details container ── */
+.delivery-form-container {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  padding: 30px;
+  border-radius: var(--radius-md);
+}
+
+.payment-method-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background-color: var(--color-bg-card);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.payment-method-card.active {
+  background-color: var(--color-neutral-light);
+  border-color: var(--color-primary);
+}
+
+.card-gateway-panel {
+  background-color: var(--color-neutral-light);
+  border: 1px solid var(--color-neutral-border);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cart-summary-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+}
+
+/* ── Checkout Success Screen ── */
+.order-success-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-lg);
+  padding: 40px 30px;
+  box-shadow: var(--shadow-md);
+}
+
+.success-icon-badge {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-details-list {
+  border-top: 1px solid var(--color-neutral-border);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--text-sm);
+  text-align: left;
+}
+
+@media (max-width: 900px) {
+  .cart-layout {
+    flex-direction: column !important;
+  }
+  .cart-summary-col {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 580px) {
+  .form-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+}
+

@@ -1,0 +1,415 @@
+/* ═══════════════════════════════════════════════════════════════
+   PRODUCT DETAIL PAGE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.product-detail-flex {
+  display: flex;
+  gap: 50px;
+  margin-bottom: 60px;
+}
+
+.detail-gallery-container {
+  width: 50%;
+}
+
+.detail-info-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Social Proof Rating ── */
+.premium-rating-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.premium-stars {
+  display: flex;
+  color: #FFAE00;
+  gap: 2px;
+}
+.premium-rating-text {
+  font-size: 13.5px;
+  color: var(--color-neutral-muted);
+  font-weight: 500;
+}
+
+/* ── Status Badges ── */
+.badge-premium-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+}
+.badge-premium-status.instock {
+  background-color: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: var(--color-success-border);
+}
+.badge-premium-status.instock::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse-green 2s infinite;
+}
+.badge-premium-status.outofstock {
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border-color: var(--color-error-border);
+}
+.badge-premium-status.outofstock::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background-color: var(--color-error);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+@keyframes pulse-green {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.7); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(46, 125, 50, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 125, 50, 0); }
+}
+
+/* ── Gallery Magnifier Badge ── */
+.gallery-zoom-badge {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-neutral-slate);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  box-shadow: var(--shadow-sm);
+  transition: opacity var(--transition-fast);
+  z-index: 5;
+}
+
+[data-theme="dark"] .gallery-zoom-badge {
+  background: rgba(13, 15, 10, 0.9);
+  color: var(--color-neutral-light);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Qty Stepper & Cart Buttons ── */
+.btn-cart-premium {
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: var(--text-base);
+  letter-spacing: 0.03em;
+  padding: 12px 24px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 14px rgba(242, 110, 0, 0.3);
+}
+.btn-cart-premium:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  box-shadow: 0 6px 20px rgba(242, 110, 0, 0.45);
+  transform: translateY(-2px);
+}
+.btn-cart-premium svg {
+  transition: transform var(--transition-fast);
+}
+.btn-cart-premium:hover:not(:disabled) svg {
+  transform: scale(1.1) translateX(2px);
+}
+.btn-cart-premium:active:not(:disabled) {
+  transform: translateY(0);
+}
+.btn-cart-premium:disabled {
+  background-color: var(--color-neutral-border);
+  color: var(--color-neutral-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-wishlist-premium {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-neutral-dark);
+}
+.btn-wishlist-premium:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background-color: rgba(242, 110, 0, 0.02);
+  transform: scale(1.05);
+}
+.btn-wishlist-premium.favorited {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background-color: rgba(242, 110, 0, 0.05);
+}
+.btn-wishlist-premium svg {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-wishlist-premium:active svg {
+  transform: scale(1.3);
+}
+
+[data-theme="dark"] .btn-wishlist-premium {
+  background-color: var(--color-bg-card);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .btn-wishlist-premium:hover {
+  background-color: rgba(242, 110, 0, 0.05);
+}
+
+.qty-stepper-premium {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 48px;
+  background-color: var(--color-bg-card);
+  transition: border-color var(--transition-fast);
+}
+.qty-stepper-premium:focus-within {
+  border-color: var(--color-primary-light);
+}
+.qty-stepper-premium button {
+  width: 40px;
+  height: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-neutral-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+.qty-stepper-premium button:hover {
+  background-color: var(--color-neutral-light);
+  color: var(--color-accent);
+}
+.qty-stepper-premium .qty-val {
+  width: 32px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+  user-select: none;
+}
+
+[data-theme="dark"] .qty-stepper-premium {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .qty-stepper-premium button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* ── USP Sleek Cards ── */
+.usp-grid-premium {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 32px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 28px;
+}
+.usp-card-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+}
+.usp-card-item:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary-light);
+  box-shadow: var(--shadow-sm);
+}
+.usp-card-icon-wrap {
+  background-color: rgba(242, 110, 0, 0.08);
+  color: var(--color-accent);
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.usp-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.usp-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+  font-family: var(--font-heading);
+}
+.usp-card-desc {
+  font-size: 12px;
+  color: var(--color-neutral-muted);
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .usp-card-item {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ── Specifications Cards ── */
+.specs-premium-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.spec-premium-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-neutral-border);
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: all var(--transition-normal);
+}
+.spec-premium-card:hover {
+  border-color: var(--color-primary-light);
+  background-color: var(--color-bg-card);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+.spec-premium-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  color: var(--color-neutral-muted);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+.spec-premium-value {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-neutral-dark);
+}
+
+[data-theme="dark"] .spec-premium-card {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .spec-premium-card:hover {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: var(--color-primary-light);
+}
+
+/* ── Premium Switchable Tabs ── */
+.tabs-container-premium {
+  background-color: #F3F4F1;
+  padding: 6px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid var(--color-neutral-border);
+  margin-bottom: 28px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tab-btn-premium {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-neutral-muted);
+  border-radius: calc(var(--radius-md) - 4px);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  flex-grow: 1;
+  text-align: center;
+}
+.tab-btn-premium:hover {
+  color: var(--color-primary);
+  background-color: rgba(255, 255, 255, 0.4);
+}
+.tab-btn-premium.active {
+  background-color: white;
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+.tab-panel-premium {
+  background-color: white;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  box-shadow: var(--shadow-sm);
+  animation: fadeIn var(--transition-normal) ease forwards;
+}
+
+[data-theme="dark"] .tabs-container-premium {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .tab-btn-premium.active {
+  background-color: var(--color-bg-card);
+  color: white;
+}
+[data-theme="dark"] .tab-panel-premium {
+  background-color: var(--color-bg-card);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ── Responsive adjustments ── */
+@media (max-width: 768px) {
+  .product-detail-flex {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .detail-gallery-container, .detail-info-container {
+    width: 100%;
+  }
+  .tabs-container-premium {
+    flex-direction: column;
+  }
+}

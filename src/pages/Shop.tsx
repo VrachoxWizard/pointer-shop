@@ -1,38 +1,66 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { Reveal } from '../components/Reveal';
 import { CATEGORIES } from '../data/products';
-import { Grid, List, SlidersHorizontal, Search } from 'lucide-react';
+import { Grid, List, SlidersHorizontal, Search, X } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
+import { EmptyState } from '../components/EmptyState';
+import { ProductCardSkeleton } from '../components/ProductCardSkeleton';
 
-interface ShopProps {
-  initialCategory?: string;
-  initialSubCategory?: string;
-  initialSearch?: string;
-}
-
-export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory, initialSearch }) => {
+export const Shop: React.FC = () => {
   const { products, addToCart, openQuickView } = useShop();
-  
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || 'all');
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string>(initialSubCategory || 'all');
-  const [searchQuery, setSearchQuery] = useState<string>(initialSearch || '');
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const selectedCategory = searchParams.get('category') || 'all';
+  const selectedSubCategory = searchParams.get('sub') || 'all';
+  const searchQuery = searchParams.get('search') || '';
+
   const [sortBy, setSortBy] = useState<string>('featured');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   
-  // Sidebar states
+  // Local UI States
   const [priceRange, setPriceRange] = useState<number>(5000);
   const [showFilters, setShowFilters] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [localSearch, setLocalSearch] = useState(searchQuery);
 
-  // Sync state if initial props change (navigating from header)
+  // Sync local search input with URL search param changes (e.g. from header)
   useEffect(() => {
-    setSelectedCategory(initialCategory || 'all');
-    setSelectedSubCategory(initialSubCategory || 'all');
-  }, [initialCategory, initialSubCategory]);
+    setLocalSearch(searchQuery);
+  }, [searchQuery]);
 
+  // Simulate loading state on filters changes for high-fidelity feel
   useEffect(() => {
-    setSearchQuery(initialSearch || '');
-  }, [initialSearch]);
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [selectedCategory, selectedSubCategory, searchQuery]);
+
+  // Handle local search submit on Enter/Blur
+  const triggerSearchUpdate = (val: string) => {
+    setSearchParams((prev) => {
+      if (!val.trim()) {
+        prev.delete('search');
+      } else {
+        prev.set('search', val.trim());
+      }
+      return prev;
+    });
+  };
+
+  // Body scroll lock on mobile when sidebar filters are active
+  useEffect(() => {
+    if (showFilters) {
+      document.body.classList.add('scroll-locked');
+    } else {
+      document.body.classList.remove('scroll-locked');
+    }
+    return () => document.body.classList.remove('scroll-locked');
+  }, [showFilters]);
 
   // Filtering Logic
   const filteredProducts = products.filter(product => {
@@ -80,6 +108,17 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
 
   const activeCategoryObject = CATEGORIES.find(c => c.id === selectedCategory);
 
+  const handleResetFilters = () => {
+    setSearchParams((prev) => {
+      prev.delete('category');
+      prev.delete('sub');
+      prev.delete('search');
+      return prev;
+    });
+    setPriceRange(5000);
+    setLocalSearch('');
+  };
+
   return (
     <div className="container" style={{ padding: '40px 20px 80px' }}>
       
@@ -87,15 +126,39 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
       <title>POINTER | Katalog Proizvoda</title>
       <meta name="description" content="Pregledajte kompletan asortiman oružja, karabina, pištolja i lovačkog streljiva po najpovoljnijim cijenama." />
 
-      {/* Breadcrumb Header */}
-      <div style={{ marginBottom: '24px', fontSize: '13px', color: 'var(--color-neutral-muted)', fontWeight: 500 }}>
-        Home / Trgovina {activeCategoryObject && `/ ${activeCategoryObject.name}`} {selectedSubCategory !== 'all' && `/ ${selectedSubCategory}`}
-      </div>
+      {/* Breadcrumb Header PageHeader */}
+      <PageHeader 
+        title="Katalog Proizvoda"
+        subtitle="Pregledajte kompletan asortiman najkvalitetnije lovačke i sportske opreme."
+        breadcrumbs={[
+          { label: 'Trgovina', route: '/shop' },
+          ...(activeCategoryObject ? [{ label: activeCategoryObject.name, route: `/shop?category=${activeCategoryObject.id}` }] : []),
+          ...(selectedSubCategory !== 'all' ? [{ label: selectedSubCategory }] : [])
+        ]}
+      />
 
       <div className="shop-page-layout">
         
+        {/* Mobile Filter Sidebar Backdrop Overlay */}
+        {showFilters && (
+          <div 
+            className="modal-overlay-custom" 
+            style={{ zIndex: 290 }} 
+            onClick={() => setShowFilters(false)}
+          />
+        )}
+
         {/* Sidebar Filters */}
         <aside className={`shop-sidebar-aside ${showFilters ? 'mobile-visible' : ''}`}>
+          
+          {/* Mobile Only Header inside Sidebar */}
+          <div className="mobile-only-header" style={{ justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid var(--color-border)', paddingBottom: '14px' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, textTransform: 'uppercase', color: 'var(--color-primary)' }}>Filteri</h3>
+            <button onClick={() => setShowFilters(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-text-main)' }}>
+              <X size={20} />
+            </button>
+          </div>
+
           {/* Categories Tree */}
           <div className="sidebar-filter-card" style={{ marginBottom: '24px' }}>
             <h3 style={{ fontSize: '15px', textTransform: 'uppercase', color: 'var(--color-primary)', borderBottom: '1px solid var(--color-border)', paddingBottom: '10px', marginBottom: '16px', fontWeight: 800 }}>
@@ -103,7 +166,13 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
               <button 
-                onClick={() => { setSelectedCategory('all'); setSelectedSubCategory('all'); }}
+                onClick={() => {
+                  setSearchParams((prev) => {
+                    prev.delete('category');
+                    prev.delete('sub');
+                    return prev;
+                  });
+                }}
                 style={{
                   background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
                   color: selectedCategory === 'all' ? 'var(--color-accent)' : 'var(--color-neutral-dark)',
@@ -117,7 +186,13 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                 return (
                   <div key={cat.id} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <button 
-                      onClick={() => { setSelectedCategory(cat.id); setSelectedSubCategory('all'); }}
+                      onClick={() => {
+                        setSearchParams((prev) => {
+                          prev.set('category', cat.id);
+                          prev.delete('sub');
+                          return prev;
+                        });
+                      }}
                       style={{
                         background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
                         color: selectedCategory === cat.id ? 'var(--color-accent)' : 'var(--color-neutral-dark)',
@@ -136,7 +211,12 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
                           return (
                             <button
                               key={sub}
-                              onClick={() => setSelectedSubCategory(sub)}
+                              onClick={() => {
+                                setSearchParams((prev) => {
+                                  prev.set('sub', sub);
+                                  return prev;
+                                });
+                              }}
                               style={{
                                 background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
                                 color: selectedSubCategory === sub ? 'var(--color-accent)' : 'var(--color-neutral-muted)',
@@ -216,8 +296,12 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
               <input 
                 type="text" 
                 placeholder="Pretraži rezultate..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={localSearch}
+                onChange={(e) => setLocalSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') triggerSearchUpdate(localSearch);
+                }}
+                onBlur={() => triggerSearchUpdate(localSearch)}
               />
               <Search size={14} style={{ position: 'absolute', right: '10px', color: 'var(--color-neutral-muted)' }} />
             </div>
@@ -271,7 +355,13 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
             <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px' }}>
               <span>Aktivna pretraga za: "<strong>{searchQuery}</strong>"</span>
               <button 
-                onClick={() => setSearchQuery('')}
+                onClick={() => {
+                  setSearchParams((prev) => {
+                    prev.delete('search');
+                    return prev;
+                  });
+                  setLocalSearch('');
+                }}
                 style={{
                   background: 'none', border: 'none', color: 'var(--color-accent)', textDecoration: 'underline', cursor: 'pointer', fontSize: '12px'
                 }}
@@ -281,17 +371,21 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
             </div>
           )}
 
-          {/* Main Products Listing */}
-          {sortedProducts.length === 0 ? (
-            <div className="no-results-panel">
-              <p style={{ fontSize: '16px', color: 'var(--color-neutral-muted)', marginBottom: '16px' }}>Nema pronađenih proizvoda koji odgovaraju odabranim kriterijima.</p>
-              <button 
-                onClick={() => { setSelectedCategory('all'); setSelectedSubCategory('all'); setSearchQuery(''); setPriceRange(5000); }} 
-                className="btn-primary"
-              >
-                Poništi sve filtere
-              </button>
+          {/* Main Products Listing with loading shimmer / EmptyState */}
+          {isLoading ? (
+            <div className="shop-products-grid view-grid">
+              {Array.from({ length: 6 }).map((_, idx) => (
+                <ProductCardSkeleton key={idx} />
+              ))}
             </div>
+          ) : sortedProducts.length === 0 ? (
+            <EmptyState 
+              icon={<Search size={48} />}
+              title="Nema rezultata"
+              description="Nema pronađenih proizvoda koji odgovaraju odabranim kriterijima."
+              actionLabel="Poništi sve filtere"
+              onAction={handleResetFilters}
+            />
           ) : (
             <Reveal delay={0.1}>
               <div className={`shop-products-grid view-${viewMode}`}>
@@ -329,35 +423,6 @@ export const Shop: React.FC<ShopProps> = ({ initialCategory, initialSubCategory,
         </div>
 
       </div>
-
-      <style>{`
-        @media (max-width: 900px) {
-          .shop-sidebar-aside {
-            display: none !important;
-          }
-          .shop-sidebar-aside.mobile-visible {
-            display: block !important;
-            position: fixed;
-            top: 110px;
-            left: 0;
-            width: 100%;
-            height: calc(100vh - 110px);
-            background: var(--color-bg-site);
-            z-index: 300;
-            padding: 20px;
-            overflow-y: auto;
-          }
-          .mobile-filter-btn {
-            display: flex !important;
-          }
-        }
-        @media (max-width: 580px) {
-          .catalog-search-wrapper {
-            width: 100% !important;
-            order: 3;
-          }
-        }
-      `}</style>
     </div>
   );
 };

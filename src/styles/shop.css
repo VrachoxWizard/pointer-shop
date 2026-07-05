@@ -1,0 +1,193 @@
+/* ═══════════════════════════════════════════════════════════════
+   SHOP PAGE STYLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.shop-page-layout {
+  display: flex;
+  gap: 30px;
+  position: relative;
+}
+
+.shop-sidebar-aside {
+  width: 260px;
+  flex-shrink: 0;
+  transition: all var(--transition-normal);
+}
+
+.sidebar-filter-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sidebar-filter-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.max-price-range-filter {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shop-main-catalog {
+  flex-grow: 1;
+}
+
+.catalog-toolbar-panel {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.catalog-search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 220px;
+}
+
+.catalog-search-wrapper input {
+  width: 100%;
+  padding: 8px 36px 8px 12px;
+  font-size: var(--text-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-card);
+  color: var(--color-neutral-dark);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.catalog-search-wrapper input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(58, 63, 29, 0.1);
+}
+
+.view-mode-button {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  color: var(--color-neutral-muted);
+}
+
+.view-mode-button.active {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.no-results-panel {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Grid/List transition layout ── */
+.shop-products-grid {
+  display: grid;
+  transition: all var(--transition-normal);
+}
+
+.shop-products-grid.view-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: clamp(16px, 3vw, 32px);
+}
+
+.shop-products-grid.view-list {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+/* ── Shop List Item ── */
+.shop-list-item {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  gap: 20px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.shop-list-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.shop-list-item-image {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* Sidebar section accordion card fallback */
+.sidebar-section {
+  background: white;
+  border: 1px solid var(--color-neutral-border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.mobile-only-header {
+  display: none;
+}
+
+/* ── Mobile Responsive sidebar override ── */
+@media (max-width: 900px) {
+  .shop-sidebar-aside {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 300px;
+    height: 100vh;
+    background-color: var(--color-bg-card);
+    z-index: var(--z-modal);
+    overflow-y: auto;
+    padding: 20px;
+    box-shadow: var(--shadow-lg);
+    transition: left 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .shop-sidebar-aside.mobile-visible {
+    left: 0;
+  }
+  .mobile-filter-btn {
+    display: flex !important;
+  }
+  .mobile-only-header {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 580px) {
+  .catalog-search-wrapper {
+    width: 100% !important;
+    order: 3;
+  }
+}
+
+

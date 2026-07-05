@@ -1,10 +1,8 @@
 import React, { useActionState, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { Trash2, ShoppingBag, ArrowRight, ArrowLeft, CreditCard, ShieldCheck, Check } from 'lucide-react';
-
-interface CartPageProps {
-  onNavigate: (route: string) => void;
-}
+import { EmptyState } from '../components/EmptyState';
 
 interface OrderResult {
   success: boolean;
@@ -12,7 +10,8 @@ interface OrderResult {
   error?: string;
 }
 
-export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
+export const CartPage: React.FC = () => {
+  const navigate = useNavigate();
   const { cart, updateQuantity, removeFromCart, clearCart } = useShop();
   
   // Steps switcher
@@ -94,14 +93,14 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
           <div className="success-details-list" style={{ marginBottom: '32px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--color-neutral-muted)' }}>Status narudžbe:</span>
-              <span style={{ fontWeight: 'bold', color: '#2F5935' }}>U obradi (Dostava u tijeku)</span>
+              <span style={{ fontWeight: 'bold', color: 'var(--color-success)' }}>U obradi (Dostava u tijeku)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--color-neutral-muted)' }}>Procijenjeno vrijeme dostave:</span>
               <span style={{ fontWeight: 'bold' }}>3-5 radnih dana</span>
             </div>
           </div>
-          <button onClick={() => onNavigate('home')} className="btn-primary" style={{ width: '100%' }}>
+          <button onClick={() => navigate('/')} className="btn-primary" style={{ width: '100%' }}>
             Povratak na Naslovnicu
           </button>
         </div>
@@ -119,13 +118,13 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
       </h1>
 
       {cart.length === 0 ? (
-        <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-neutral-border)', borderRadius: 'var(--radius-md)', padding: '60px 20px', textAlign: 'center' }}>
-          <ShoppingBag size={48} style={{ color: 'var(--color-neutral-muted)', marginBottom: '16px' }} />
-          <p style={{ fontSize: '16px', color: 'var(--color-neutral-muted)', marginBottom: '24px' }}>Vaša košarica je trenutno prazna.</p>
-          <button onClick={() => onNavigate('shop')} className="btn-primary">
-            Kreni u Trgovinu
-          </button>
-        </div>
+        <EmptyState 
+          icon={<ShoppingBag size={48} />}
+          title="Vaša košarica je prazna"
+          description="Još niste dodali niti jedan proizvod u košaricu."
+          actionLabel="Kreni u Trgovinu"
+          onAction={() => navigate('/shop')}
+        />
       ) : (
         <div>
           {/* Checkout progress stepper */}
@@ -167,7 +166,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                         <img src={item.product.images[0]} alt={item.product.name} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                       </div>
                       <div style={{ flexGrow: 1 }}>
-                        <h3 style={{ fontSize: '15px', color: 'var(--color-neutral-dark)', cursor: 'pointer' }} onClick={() => onNavigate(`product/${item.product.id}`)}>
+                        <h3 style={{ fontSize: '15px', color: 'var(--color-neutral-dark)', cursor: 'pointer' }} onClick={() => navigate(`/product/${item.product.id}`)}>
                           {item.product.name}
                         </h3>
                         <span style={{ fontSize: '12px', color: 'var(--color-neutral-muted)' }}>Cijena: €{item.product.price.toFixed(2)}</span>
@@ -201,7 +200,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                         type="button"
                         onClick={() => removeFromCart(item.product.id)}
                         aria-label="Ukloni iz košarice"
-                        style={{ background: 'none', border: 'none', color: '#E57373', cursor: 'pointer', padding: '6px' }}
+                        style={{ background: 'none', border: 'none', color: 'var(--color-error-light)', cursor: 'pointer', padding: '6px' }}
                       >
                         <Trash2 size={18} />
                       </button>
@@ -286,7 +285,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                       </div>
 
                       {stepError && (
-                        <p style={{ color: '#E57373', fontSize: '13px', fontWeight: 600 }}>{stepError}</p>
+                        <p style={{ color: 'var(--color-error-light)', fontSize: '13px', fontWeight: 600 }}>{stepError}</p>
                       )}
                     </div>
                   </div>
@@ -346,7 +345,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                     )}
 
                     {formState && !formState.success && (
-                      <p style={{ color: '#E57373', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>{formState.error}</p>
+                      <p style={{ color: 'var(--color-error-light)', fontSize: '13px', fontWeight: 600, marginBottom: '16px' }}>{formState.error}</p>
                     )}
                   </div>
                 </div>
@@ -422,7 +421,7 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
                     </div>
                     
                     {shippingCost > 0 && (
-                      <div style={{ fontSize: '11px', color: 'var(--color-accent)', fontWeight: 600, backgroundColor: '#FAF2EC', padding: '6px 10px', borderRadius: '4px' }}>
+                      <div style={{ fontSize: '11px', color: 'var(--color-warning)', fontWeight: 600, backgroundColor: 'var(--color-warning-bg)', padding: '6px 10px', borderRadius: '4px' }}>
                         Dodajte još €{(freeShippingLimit - subtotal).toFixed(2)} za besplatnu dostavu!
                       </div>
                     )}
@@ -451,24 +450,6 @@ export const CartPage: React.FC<CartPageProps> = ({ onNavigate }) => {
           </form>
         </div>
       )}
-
-      {/* Embedded CSS Resets for cart */}
-      <style>{`
-        @media (max-width: 900px) {
-          .cart-layout {
-            flex-direction: column !important;
-          }
-          .cart-summary-col {
-            width: 100% !important;
-          }
-        }
-        @media (max-width: 580px) {
-          .form-row {
-            flex-direction: column !important;
-            gap: 12px !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };

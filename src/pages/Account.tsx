@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { ProductCard } from '../components/ProductCard';
 import { Heart, Package, MapPin } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
+import { EmptyState } from '../components/EmptyState';
 
-interface AccountProps {
-  onNavigate: (route: string) => void;
-}
-
-export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
+export const Account: React.FC = () => {
   const { products, wishlist } = useShop();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'wishlist' | 'orders' | 'profile'>('wishlist');
 
   const favoritedProducts = products.filter(p => wishlist.includes(p.id));
@@ -24,22 +24,25 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
       {/* React 19 Native Document Metadata */}
       <title>POINTER | Moj Račun</title>
 
-      <h1 style={{ fontSize: '28px', color: 'var(--color-primary)', marginBottom: '30px', borderBottom: '2px solid var(--color-primary)', paddingBottom: '12px' }}>
-        Moj Račun
-      </h1>
+      {/* Reusable PageHeader with Breadcrumbs */}
+      <PageHeader 
+        title="Moj Račun" 
+        subtitle="Upravljajte svojim narudžbama, listom želja i postavkama profila."
+        breadcrumbs={[{ label: 'Moj račun' }]}
+      />
 
       <div style={{ display: 'flex', gap: '30px' }} className="account-layout">
         
         {/* Left Side: Tabs Selection */}
         <div style={{ width: '220px', flexShrink: 0 }} className="account-menu">
-          <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '12px 0', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '12px 0', display: 'flex', flexDirection: 'column' }}>
             <button
               onClick={() => setActiveTab('wishlist')}
               style={{
                 textAlign: 'left', padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer',
                 fontWeight: activeTab === 'wishlist' ? 'bold' : 500,
                 color: activeTab === 'wishlist' ? 'var(--color-accent)' : 'var(--color-text-main)',
-                backgroundColor: activeTab === 'wishlist' ? 'var(--color-bg-site)' : 'transparent',
+                backgroundColor: activeTab === 'wishlist' ? 'var(--color-neutral-light)' : 'transparent',
                 display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'
               }}
             >
@@ -52,7 +55,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                 textAlign: 'left', padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer',
                 fontWeight: activeTab === 'orders' ? 'bold' : 500,
                 color: activeTab === 'orders' ? 'var(--color-accent)' : 'var(--color-text-main)',
-                backgroundColor: activeTab === 'orders' ? 'var(--color-bg-site)' : 'transparent',
+                backgroundColor: activeTab === 'orders' ? 'var(--color-neutral-light)' : 'transparent',
                 display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'
               }}
             >
@@ -65,7 +68,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                 textAlign: 'left', padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer',
                 fontWeight: activeTab === 'profile' ? 'bold' : 500,
                 color: activeTab === 'profile' ? 'var(--color-accent)' : 'var(--color-text-main)',
-                backgroundColor: activeTab === 'profile' ? 'var(--color-bg-site)' : 'transparent',
+                backgroundColor: activeTab === 'profile' ? 'var(--color-neutral-light)' : 'transparent',
                 display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px'
               }}
             >
@@ -82,10 +85,13 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
             <div>
               <h2 style={{ fontSize: '20px', color: 'var(--color-primary)', marginBottom: '20px' }}>Moja Lista Želja</h2>
               {favoritedProducts.length === 0 ? (
-                <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '40px', textAlign: 'center' }}>
-                  <p style={{ color: 'var(--color-text-muted)', marginBottom: '16px' }}>Još niste dodali niti jedan proizvod na listu želja.</p>
-                  <button onClick={() => onNavigate('shop')} className="btn-secondary" style={{ fontSize: '13px' }}>Pregledaj katalog</button>
-                </div>
+                <EmptyState 
+                  icon={<Heart size={48} />}
+                  title="Prazna lista želja"
+                  description="Još niste dodali niti jedan proizvod na listu želja."
+                  actionLabel="Pregledaj katalog"
+                  onAction={() => navigate('/shop')}
+                />
               ) : (
                 <div className="grid-cols-3">
                   {favoritedProducts.map(product => (
@@ -106,7 +112,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                   <div 
                     key={order.id}
                     style={{
-                      backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px 20px',
+                      backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px 20px',
                       display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px'
                     }}
                   >
@@ -116,7 +122,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontWeight: 800, fontSize: '15px', color: 'var(--color-primary)' }}>€{order.total.toFixed(2)}</div>
-                      <span style={{ fontSize: '12px', color: '#2F5935', backgroundColor: '#E1EBE2', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', marginTop: '4px', fontWeight: 600 }}>
+                      <span style={{ fontSize: '12px', color: 'var(--color-success)', backgroundColor: 'var(--color-success-bg)', padding: '2px 8px', borderRadius: '4px', display: 'inline-block', marginTop: '4px', fontWeight: 600 }}>
                         {order.status}
                       </span>
                     </div>
@@ -129,7 +135,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
 
           {/* Profile Tab */}
           {activeTab === 'profile' && (
-            <div style={{ backgroundColor: 'white', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '24px' }}>
+            <div style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '24px' }}>
               <h2 style={{ fontSize: '20px', color: 'var(--color-primary)', marginBottom: '20px', fontWeight: 700 }}>Moja Adresa</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '14px' }}>
                 <div>
@@ -160,17 +166,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
 
       </div>
 
-      <style>{`
-        @media (max-width: 768px) {
-          .account-layout {
-            flex-direction: column !important;
-          }
-          .account-menu {
-            width: 100% !important;
-          }
-        }
-      `}</style>
-
     </div>
   );
 };
+export default Account;

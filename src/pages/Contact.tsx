@@ -1,5 +1,6 @@
 import React, { useActionState } from 'react';
 import { Mail, Phone, MapPin, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader';
 
 interface FormResult {
   success: boolean;
@@ -40,15 +41,12 @@ export const Contact: React.FC = () => {
       <title>POINTER | Kontaktirajte Nas</title>
       <meta name="description" content="Kontakt podaci, lokacija i obrazac za slanje poruka trgovini POINTER." />
 
-      {/* Hero Header Area */}
-      <div className="page-hero">
-        <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 3.5rem)', marginBottom: '16px' }}>
-          Kontaktirajte Nas
-        </h1>
-        <p style={{ fontSize: '16px', maxWidth: '600px', margin: '0 auto', color: 'var(--color-neutral-border)', opacity: 0.9 }}>
-          Tu smo za sva vaša pitanja. Bilo da se radi o upitu za asortiman, narudžbu ili stručan savjet – naš tim Vam stoji na raspolaganju.
-        </p>
-      </div>
+      {/* Reusable PageHeader with Breadcrumbs */}
+      <PageHeader 
+        title="Kontaktirajte Nas" 
+        subtitle="Tu smo za sva vaša pitanja. Bilo da se radi o upitu za asortiman, narudžbu ili stručan savjet – naš tim Vam stoji na raspolaganju."
+        breadcrumbs={[{ label: 'Kontakt' }]}
+      />
 
       <div style={{ display: 'flex', gap: '40px' }} className="contact-layout">
         
@@ -71,7 +69,7 @@ export const Contact: React.FC = () => {
             </div>
             <div>
               <strong style={{ display: 'block', fontSize: '15px', color: 'var(--color-primary)', marginBottom: '4px' }}>Telefon</strong>
-              <a href="tel:+38512920400" style={{ fontSize: '14px', color: 'var(--color-neutral-muted)', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-accent)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-neutral-muted)'}>
+              <a href="tel:+38512920400" style={{ fontSize: '14px', color: 'var(--color-neutral-muted)', transition: 'color 0.2s' }} className="hover-accent">
                 +385 (0)1 2920 400
               </a>
             </div>
@@ -83,7 +81,7 @@ export const Contact: React.FC = () => {
             </div>
             <div>
               <strong style={{ display: 'block', fontSize: '15px', color: 'var(--color-primary)', marginBottom: '4px' }}>E-mail</strong>
-              <a href="mailto:info@pointershop.net" style={{ fontSize: '14px', color: 'var(--color-neutral-muted)', transition: 'color 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--color-accent)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--color-neutral-muted)'}>
+              <a href="mailto:info@pointershop.net" style={{ fontSize: '14px', color: 'var(--color-neutral-muted)', transition: 'color 0.2s' }} className="hover-accent">
                 info@pointershop.net
               </a>
             </div>
@@ -180,25 +178,6 @@ export const Contact: React.FC = () => {
           title="Pointer Shop Map Location"
         ></iframe>
       </div>
-
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @media (max-width: 900px) {
-          .contact-layout {
-            flex-direction: column !important;
-          }
-          .contact-info-col, .contact-form-col {
-            width: 100% !important;
-          }
-          .page-hero {
-            padding: 40px 20px;
-          }
-        }
-      `}</style>
-
     </div>
   );
 };

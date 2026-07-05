@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
 import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, User, Sun, Moon } from 'lucide-react';
 import { CATEGORIES, Product } from '../data/products';
 
 interface HeaderProps {
   currentRoute: string;
-  onNavigate: (route: string, categoryFilter?: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({ currentRoute }) => {
   const { cart, wishlist, products, theme, toggleTheme, openCartDrawer } = useShop();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  // Smart Header Hide-on-Scroll States
+  const [showHeader, setShowHeader] = useState(true);
 
   // Rotating premium announcements list
   const announcements = [
@@ -32,12 +39,41 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
     return () => clearInterval(timer);
   }, []);
 
+  // Hide on scroll-down, show on scroll-up
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > 150) {
+        if (currentScrollY > lastScrollY) {
+          setShowHeader(false); // scrolling down
+        } else {
+          setShowHeader(true); // scrolling up
+        }
+      } else {
+        setShowHeader(true);
+      }
+      
+      lastScrollY = currentScrollY;
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Reset selected suggestion index whenever suggestions change
+  useEffect(() => {
+    setSelectedIndex(-1);
+  }, [suggestions]);
+
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      onNavigate(`shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery('');
       setSuggestions([]);
@@ -68,6 +104,31 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
     }
   };
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (suggestions.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : 0));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => (prev > 0 ? prev - 1 : suggestions.length - 1));
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+        e.preventDefault();
+        const product = suggestions[selectedIndex];
+        navigate(`/product/${product.id}`);
+        setIsSearchOpen(false);
+        setSearchQuery('');
+        setSuggestions([]);
+      }
+    } else if (e.key === 'Escape') {
+      setIsSearchOpen(false);
+      setSearchQuery('');
+      setSuggestions([]);
+    }
+  };
+
   const toggleDropdown = (id: string) => {
     if (activeDropdown === id) {
       setActiveDropdown(null);
@@ -76,8 +137,14 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
     }
   };
 
+  // Helper check for active categories
+  const isCategoryActive = (catId: string) => {
+    const params = new URLSearchParams(location.search);
+    return location.pathname === '/shop' && params.get('category') === catId;
+  };
+
   return (
-    <header className="site-header site-header-sticky">
+    <header className={`site-header site-header-sticky ${!showHeader ? 'header-hidden' : ''}`}>
       {/* Dynamic Sliding Announcement Bar */}
       <div className="announcement-bar">
         <div className="announcement-bar-track">
@@ -93,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           
           {/* Logo / Brand */}
           <div 
-            onClick={() => onNavigate('home')} 
+            onClick={() => navigate('/')} 
             className="logo site-logo-container"
           >
             <img 
@@ -114,11 +181,9 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button 
-                  onClick={() => onNavigate('shop', cat.id)}
+                  onClick={() => navigate(`/shop?category=${cat.id}`)}
                   className={`premium-nav-link ${
-                    (currentRoute.startsWith('shop') && activeDropdown === cat.id) || currentRoute === `shop?category=${cat.id}`
-                      ? 'active'
-                      : ''
+                    isCategoryActive(cat.id) || (activeDropdown === cat.id) ? 'active' : ''
                   }`}
                 >
                   {cat.name}
@@ -137,7 +202,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                       <button
                         key={sub}
                         onClick={() => {
-                          onNavigate(`shop?category=${cat.id}&sub=${encodeURIComponent(sub)}`);
+                          navigate(`/shop?category=${cat.id}&sub=${encodeURIComponent(sub)}`);
                           setActiveDropdown(null);
                         }}
                         className="nav-dropdown-item"
@@ -151,14 +216,14 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             ))}
             
             <button 
-              onClick={() => onNavigate('about-us')}
+              onClick={() => navigate('/about-us')}
               className={`premium-nav-link ${currentRoute === 'about-us' ? 'active' : ''}`}
               style={{ padding: '8px 16px' }}
             >
               O NAMA
             </button>
             <button 
-              onClick={() => onNavigate('contact')}
+              onClick={() => navigate('/contact')}
               className={`premium-nav-link ${currentRoute === 'contact' ? 'active' : ''}`}
               style={{ padding: '8px 16px' }}
             >
@@ -190,7 +255,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
             {/* Wishlist */}
             <button 
-              onClick={() => onNavigate('account')}
+              onClick={() => navigate('/account')}
               aria-label={`Lista želja, ${wishlist.length} proizvoda`}
               title="Lista želja"
             >
@@ -204,7 +269,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
 
             {/* Account */}
             <button 
-              onClick={() => onNavigate('account')}
+              onClick={() => navigate('/account')}
               aria-label="Moj račun"
               title="Moj Račun"
             >
@@ -251,26 +316,37 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                 placeholder="Traži proizvode po nazivu, kalibru ili brendu..." 
                 value={searchQuery}
                 onChange={handleSearchChange}
+                onKeyDown={handleSearchKeyDown}
                 className="input-field"
                 style={{ flexGrow: 1 }}
                 autoFocus
+                aria-autocomplete="list"
+                aria-controls="search-results-listbox"
+                aria-activedescendant={selectedIndex >= 0 ? `suggestion-item-${selectedIndex}` : undefined}
               />
               <button type="submit" className="btn-primary" style={{ padding: '0 24px' }}>Traži</button>
             </form>
 
             {/* Live Search Suggestions */}
             {suggestions.length > 0 && (
-              <div className="suggestions-panel animate-scale-in">
-                {suggestions.map(p => (
+              <div className="suggestions-panel animate-scale-in" id="search-results-listbox" role="listbox">
+                {suggestions.map((p, idx) => (
                   <div 
                     key={p.id}
+                    id={`suggestion-item-${idx}`}
+                    role="option"
+                    aria-selected={idx === selectedIndex}
                     onClick={() => {
-                      onNavigate(`product/${p.id}`);
+                      navigate(`/product/${p.id}`);
                       setIsSearchOpen(false);
                       setSuggestions([]);
                       setSearchQuery('');
                     }}
                     className="suggestion-item-row"
+                    style={{
+                      backgroundColor: idx === selectedIndex ? 'var(--color-neutral-light)' : 'transparent',
+                      outline: idx === selectedIndex ? '1px solid var(--color-accent)' : 'none'
+                    }}
                   >
                     <img src={p.images[0]} alt="" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
                     <div style={{ flexGrow: 1, textAlign: 'left' }}>
@@ -315,7 +391,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                 {activeDropdown === cat.id && cat.subCategories && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '12px', paddingLeft: '16px' }}>
                     <button 
-                      onClick={() => { onNavigate('shop', cat.id); setIsMobileMenuOpen(false); }}
+                      onClick={() => { navigate(`/shop?category=${cat.id}`); setIsMobileMenuOpen(false); }}
                       style={{ background: 'none', border: 'none', textAlign: 'left', fontSize: '14px', color: 'var(--color-text-muted)', fontWeight: 600 }}
                     >
                       SVI PROIZVODI
@@ -324,7 +400,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                       <button
                         key={sub}
                         onClick={() => {
-                          onNavigate(`shop?category=${cat.id}&sub=${encodeURIComponent(sub)}`);
+                          navigate(`/shop?category=${cat.id}&sub=${encodeURIComponent(sub)}`);
                           setIsMobileMenuOpen(false);
                         }}
                         style={{
@@ -345,13 +421,13 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             ))}
             
             <button 
-              onClick={() => { onNavigate('about-us'); setIsMobileMenuOpen(false); }}
+              onClick={() => { navigate('/about-us'); setIsMobileMenuOpen(false); }}
               style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'inherit', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
             >
               O NAMA
             </button>
             <button 
-              onClick={() => { onNavigate('contact'); setIsMobileMenuOpen(false); }}
+              onClick={() => { navigate('/contact'); setIsMobileMenuOpen(false); }}
               style={{ background: 'none', border: 'none', fontWeight: 700, fontSize: '16px', color: 'inherit', textTransform: 'uppercase', textAlign: 'left', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}
             >
               KONTAKTIRAJTE NAS
@@ -359,18 +435,6 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           </div>
         </div>
       )}
-
-      {/* Injection of mobile styles for Header */}
-      <style>{`
-        @media (max-width: 900px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-toggle {
-            display: block !important;
-          }
-        }
-      `}</style>
     </header>
   );
 };

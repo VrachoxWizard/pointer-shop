@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useShop } from '../context/ShopContext';
-import { X, Heart, ShoppingBag, Check } from 'lucide-react';
+import { X, Heart, ShoppingBag } from 'lucide-react';
 
 export const QuickViewModal: React.FC = () => {
   const { quickViewProduct, closeQuickView, addToCart, wishlist, toggleWishlist } = useShop();
@@ -10,8 +10,42 @@ export const QuickViewModal: React.FC = () => {
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomPos, setZoomPos] = useState({ x: 50, y: 50 });
 
+  const galleryRectRef = useRef<DOMRect | null>(null);
+
+  // Scroll lock effect
+  useEffect(() => {
+    if (quickViewProduct) {
+      document.body.classList.add('scroll-locked');
+    } else {
+      document.body.classList.remove('scroll-locked');
+    }
+    return () => {
+      document.body.classList.remove('scroll-locked');
+    };
+  }, [quickViewProduct]);
+
+  // Reset indices/quantities when product changes
+  useEffect(() => {
+    setQuantity(1);
+    setSelectedImageIndex(0);
+  }, [quickViewProduct]);
+
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsZoomed(true);
+    galleryRectRef.current = e.currentTarget.getBoundingClientRect();
+  };
+
+  const handleMouseLeave = () => {
+    setIsZoomed(false);
+    setZoomPos({ x: 50, y: 50 });
+    galleryRectRef.current = null;
+  };
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    if (!galleryRectRef.current) {
+      galleryRectRef.current = e.currentTarget.getBoundingClientRect();
+    }
+    const { left, top, width, height } = galleryRectRef.current;
     const x = ((e.clientX - left) / width) * 100;
     const y = ((e.clientY - top) / height) * 100;
     setZoomPos({ x, y });
@@ -47,8 +81,8 @@ export const QuickViewModal: React.FC = () => {
         {/* Left: Gallery Column */}
         <div className="modal-gallery-col">
           <div 
-            onMouseEnter={() => setIsZoomed(true)}
-            onMouseLeave={() => { setIsZoomed(false); setZoomPos({ x: 50, y: 50 }); }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseMove}
             style={{ 
               flexGrow: 1, 
@@ -218,29 +252,7 @@ export const QuickViewModal: React.FC = () => {
         </div>
 
       </div>
-
-      {/* Embedded responsive stylesheet */}
-      <style>{`
-        @media (max-width: 768px) {
-          .modal-inner-box {
-            flex-direction: column !important;
-            max-height: 95vh !important;
-            overflow-y: auto !important;
-          }
-          .modal-inner-box > div {
-            width: 100% !important;
-          }
-          .modal-inner-box > div:first-child {
-            padding: 30px 16px 16px !important;
-            height: auto !important;
-            border-right: none !important;
-            border-bottom: 1px solid var(--color-border) !important;
-          }
-          .modal-inner-box > div:last-child {
-            padding: 24px 20px 20px !important;
-          }
-        }
-      `}</style>
     </div>
   );
 };
+

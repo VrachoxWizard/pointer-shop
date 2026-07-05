@@ -6,13 +6,36 @@ export const PromoPopup: React.FC = () => {
 
   useEffect(() => {
     const shown = localStorage.getItem('pointer_promo_shown');
-    if (!shown) {
-      // Show promotional modal after 2 seconds
+    if (shown) return;
+
+    const startPromoTimer = () => {
+      // Show promotional modal after 3 seconds once cookie banner is resolved
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 2000);
-      return () => clearTimeout(timer);
+      }, 3000);
+      return timer;
+    };
+
+    const hasCookieConsent = localStorage.getItem('pointer_cookie_consent');
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
+    if (hasCookieConsent) {
+      timerId = startPromoTimer();
+    } else {
+      // Wait for cookie banner resolution event
+      const handleConsentChanged = () => {
+        timerId = startPromoTimer();
+      };
+      window.addEventListener('cookie_consent_changed', handleConsentChanged);
+      return () => {
+        if (timerId) clearTimeout(timerId);
+        window.removeEventListener('cookie_consent_changed', handleConsentChanged);
+      };
     }
+
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
   }, []);
 
   const handleClose = () => {
@@ -20,60 +43,30 @@ export const PromoPopup: React.FC = () => {
     setIsOpen(false);
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('scroll-locked');
+    } else {
+      document.body.classList.remove('scroll-locked');
+    }
+    return () => {
+      document.body.classList.remove('scroll-locked');
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div 
       className="promo-overlay animate-fade-in"
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.85)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '20px'
-      }}
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
     >
-      <div 
-        className="promo-box animate-popup-fade"
-        style={{
-          position: 'relative',
-          maxWidth: '650px',
-          width: '100%',
-          borderRadius: 'var(--radius-lg)',
-          overflow: 'visible'
-        }}
-      >
+      <div className="promo-box animate-popup-fade">
         {/* Close Button */}
         <button 
           onClick={handleClose}
-          style={{
-            position: 'absolute',
-            top: '-18px',
-            right: '-18px',
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            backgroundColor: '#000000',
-            color: '#FFFFFF',
-            border: '2px solid white',
-            fontSize: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-            zIndex: 10000,
-            transition: 'var(--transition-fast)'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#222222'}
-          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#000000'}
+          className="promo-close-btn"
+          aria-label="Zatvori promociju"
         >
           <X size={20} />
         </button>
@@ -91,16 +84,7 @@ export const PromoPopup: React.FC = () => {
           }}
         />
       </div>
-      
-      <style>{`
-        @keyframes popupFade {
-          from { transform: scale(0.9); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        .animate-popup-fade {
-          animation: popupFade 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-      `}</style>
     </div>
   );
 };
+

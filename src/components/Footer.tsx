@@ -1,16 +1,14 @@
 import React, { useActionState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
-
-interface FooterProps {
-  onNavigate: (route: string) => void;
-}
 
 interface FormState {
   success: boolean;
   message: string;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC = () => {
+  const navigate = useNavigate();
   
   // React 19 Action handler for newsletter signup
   const subscribeAction = async (_prevState: FormState | null, formData: FormData): Promise<FormState> => {
@@ -44,7 +42,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* About Section */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <h3 className="footer-logo-title">POINTER TRGOVINA</h3>
-            <p style={{ fontSize: '14px', lineHeight: '1.7' }}>
+            <p>
               Specijalizirana trgovina oružjem, streljivom, optikom i vrhunskom lovačkom opremom. Vaš pouzdani partner za sigurnost i uspješan lov.
             </p>
             <div className="footer-payment-tags">
@@ -61,16 +59,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 style={{ color: 'white', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Korisne Poveznice</h4>
             <ul className="footer-links-list">
               <li>
-                <button onClick={() => onNavigate('home')}>Početna</button>
+                <button onClick={() => navigate('/')}>Početna</button>
               </li>
               <li>
-                <button onClick={() => onNavigate('shop')}>Katalog Proizvoda</button>
+                <button onClick={() => navigate('/shop')}>Katalog Proizvoda</button>
               </li>
               <li>
-                <button onClick={() => onNavigate('about-us')}>O Nama</button>
+                <button onClick={() => navigate('/about-us')}>O Nama</button>
               </li>
               <li>
-                <button onClick={() => onNavigate('contact')}>Kontaktirajte Nas</button>
+                <button onClick={() => navigate('/contact')}>Kontaktirajte Nas</button>
               </li>
             </ul>
           </div>
@@ -80,13 +78,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <h4 style={{ color: 'white', fontSize: '15px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Informacije</h4>
             <ul className="footer-links-list">
               <li>
-                <button onClick={() => onNavigate('privacy-policy')}>Pravila Privatnosti</button>
+                <button onClick={() => navigate('/privacy-policy')}>Pravila Privatnosti</button>
               </li>
               <li>
-                <button onClick={() => onNavigate('shop')}>Uvjeti Korištenja</button>
+                <button onClick={() => navigate('/shop')}>Uvjeti Korištenja</button>
               </li>
               <li>
-                <button onClick={() => onNavigate('contact')}>Dostava i Povrati</button>
+                <button onClick={() => navigate('/contact')}>Dostava i Povrati</button>
               </li>
             </ul>
           </div>
@@ -104,36 +102,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   placeholder="Vaša e-mail adresa..." 
                   required
                   className="footer-email-input"
-                  style={{
-                    width: '100%',
-                    padding: '10px 40px 10px 12px',
-                    borderRadius: '4px',
-                    border: '1px solid #3A3E33',
-                    backgroundColor: '#23271D',
-                    color: 'white',
-                    outline: 'none',
-                    fontSize: '13px'
-                  }}
                 />
                 <button 
                   type="submit" 
                   disabled={isPending}
-                  style={{
-                    position: 'absolute',
-                    right: '4px',
-                    top: '4px',
-                    bottom: '4px',
-                    backgroundColor: 'var(--color-accent)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '3px',
-                    width: '32px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    transition: 'var(--transition-fast)'
-                  }}
+                  className="footer-submit-btn"
                 >
                   {isPending ? (
                     <span className="spinner" style={{ width: '12px', height: '12px', border: '2px solid white', borderTop: '2px solid transparent', borderRadius: '50%', display: 'inline-block', animation: 'spin 1s linear infinite' }}></span>
@@ -146,7 +119,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {formState && (
                 <p style={{ 
                   fontSize: '12px', 
-                  color: formState.success ? '#82C582' : '#E57373',
+                  color: formState.success ? 'var(--color-success)' : 'var(--color-error)',
                   fontWeight: 500,
                   marginTop: '4px'
                 }}>
@@ -159,19 +132,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Footer Middle (Address Details) */}
-        <div 
-          className="footer-address-bar"
-          style={{ 
-            display: 'flex', 
-            flexWrap: 'wrap', 
-            gap: '24px', 
-            padding: '24px 0', 
-            borderTop: '1px solid #2E3227', 
-            borderBottom: '1px solid #2E3227', 
-            fontSize: '13px', 
-            justifyContent: 'center' 
-          }}
-        >
+        <div className="footer-address-bar">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <MapPin size={16} style={{ color: 'var(--color-accent)' }} />
             <span>Koledinečka ulica 1a, 10000 Zagreb, Hrvatska</span>
@@ -187,19 +148,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         </div>
 
         {/* Footer Bottom (Copyrights) */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', padding: '20px 0 0', fontSize: '12px' }}>
+        <div className="footer-bottom-bar">
           <p className="footer-bottom-text">© {new Date().getFullYear()} POINTER Trgovina d.o.o. Sva prava pridržana.</p>
           <p className="footer-bottom-text">Izrada: Antigravity React Migration App</p>
         </div>
 
       </div>
-
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </footer>
   );
 };
+
