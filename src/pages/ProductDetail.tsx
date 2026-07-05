@@ -13,6 +13,7 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
+  const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'delivery'>('description');
 
   const product = products.find(p => p.id === productId) || products[0];
 
@@ -222,18 +223,65 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({ productId, onNavig
 
       </div>
 
-      {/* Detailed Specifications and Details Section */}
+      {/* Detailed Specifications and Switchable Tabs Section */}
       <section style={{ borderTop: '1px solid var(--color-border)', paddingTop: '40px', marginBottom: '60px' }}>
-        <h2 style={{ fontSize: '20px', color: 'var(--color-primary)', marginBottom: '20px' }}>TEHNIČKI DETALJI</h2>
         
-        <div className="specs-table" style={{ maxWidth: '600px' }}>
-          {Object.entries(product.specifications).map(([key, value]) => (
-            <div key={key} className="specs-row">
-              <span className="specs-label">{key}</span>
-              <span className="specs-value">{value}</span>
-            </div>
-          ))}
+        {/* Tab triggers */}
+        <div className="tabs-header-bar">
+          <button 
+            className={`tab-trigger-btn ${activeTab === 'description' ? 'active' : ''}`} 
+            onClick={() => setActiveTab('description')}
+          >
+            OPIS
+          </button>
+          <button 
+            className={`tab-trigger-btn ${activeTab === 'specifications' ? 'active' : ''}`} 
+            onClick={() => setActiveTab('specifications')}
+          >
+            SPECIFIKACIJE
+          </button>
+          <button 
+            className={`tab-trigger-btn ${activeTab === 'delivery' ? 'active' : ''}`} 
+            onClick={() => setActiveTab('delivery')}
+          >
+            DOSTAVA & JAMSTVO
+          </button>
         </div>
+
+        {/* Tab panels */}
+        <div className={`tab-panel ${activeTab === 'description' ? 'active' : ''}`}>
+          <p style={{ fontSize: '15px', color: 'var(--color-neutral-slate)', lineHeight: '1.8' }}>
+            {product.description}
+          </p>
+          <p style={{ fontSize: '14px', marginTop: '16px', color: 'var(--color-neutral-muted)', lineHeight: '1.7' }}>
+            Ovaj vrhunski proizvod dio je našeg pažljivo odabranog lovačkog i streljačkog asortimana. Testiran u zahtjevnim uvjetima i prilagođen profesionalcima i entuzijastima koji traže vrhunsku kvalitetu, ergonomiju i neprikosnovenu pouzdanost.
+          </p>
+        </div>
+
+        <div className={`tab-panel ${activeTab === 'specifications' ? 'active' : ''}`}>
+          <div className="specs-table" style={{ maxWidth: '600px' }}>
+            {Object.entries(product.specifications).map(([key, value]) => (
+              <div key={key} className="specs-row">
+                <span className="specs-label">{key}</span>
+                <span className="specs-value">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={`tab-panel ${activeTab === 'delivery' ? 'active' : ''}`}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '14px', lineHeight: '1.8', color: 'var(--color-neutral-slate)' }}>
+            <div>
+              <strong style={{ color: 'var(--color-primary)', display: 'block', marginBottom: '4px' }}>Brza Dostava</strong>
+              Besplatna dostava za sve narudžbe iznad 150 € unutar cijele Hrvatske. Za narudžbe manje vrijednosti dostava se naplaćuje 7,00 €. Isporuka se vrši u roku od 3-5 radnih dana putem ovlaštene kurirske službe.
+            </div>
+            <div>
+              <strong style={{ color: 'var(--color-primary)', display: 'block', marginBottom: '4px' }}>Jamstvo Povrata i Kvalitete</strong>
+              Kupujte bez rizika s našim 14-dnevnim pravom na jednostrani raskid ugovora. Ako niste potpuno zadovoljni proizvodom, vratite ga u originalnoj ambalaži za puni povrat novca. Jamstvo na sve tehničke komponente iznosi 24 mjeseca.
+            </div>
+          </div>
+        </div>
+
       </section>
 
       {/* Related Products Grid */}

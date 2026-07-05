@@ -92,6 +92,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
               >
                 <button 
                   onClick={() => onNavigate('shop', cat.id)}
+                  className="premium-nav-link"
                   style={{
                     background: 'none',
                     border: 'none',
@@ -167,6 +168,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             
             <button 
               onClick={() => onNavigate('about-us')}
+              className="premium-nav-link"
               style={{
                 background: 'none',
                 border: 'none',
@@ -184,6 +186,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
             </button>
             <button 
               onClick={() => onNavigate('contact')}
+              className="premium-nav-link"
               style={{
                 background: 'none',
                 border: 'none',

@@ -34,27 +34,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       style={{
         backgroundColor: 'var(--color-bg-card)',
         borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--color-border)',
         padding: '16px',
         position: 'relative',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%',
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        boxShadow: hovered ? 'var(--shadow-md)' : 'var(--shadow-sm)',
-        transform: hovered ? 'translateY(-4px)' : 'none'
+        height: '100%'
       }}
     >
       {/* Badges Overlay */}
       <div style={{ position: 'absolute', top: '16px', left: '16px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '6px' }}>
         {product.isNew && (
-          <span className="badge badge-new">Novo</span>
+          <span className="badge badge-new animated-badge">Novo</span>
         )}
         {hasSale && (
-          <span className="badge badge-sale">Akcija</span>
+          <span className="badge badge-sale animated-badge">Akcija</span>
         )}
         {product.stockStatus === 'onbackorder' && (
-          <span className="badge badge-backorder">Po narudžbi</span>
+          <span className="badge badge-backorder animated-badge">Po narudžbi</span>
         )}
       </div>
 

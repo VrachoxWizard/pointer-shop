@@ -185,8 +185,8 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       {/* Novo u Ponudi Products */}
       <section className="container" style={{ marginBottom: '60px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '24px', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Flame size={24} style={{ color: 'var(--color-accent)' }} /> NOVO U PONUDI
+          <h2 style={{ fontSize: '24px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Flame size={24} style={{ color: 'var(--color-accent)' }} /> <span className="text-gradient-copper">NOVO U PONUDI</span>
           </h2>
           <button 
             onClick={() => onNavigate('shop')} 
@@ -237,7 +237,7 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       {/* Novo Streljivo */}
       <section className="container" style={{ marginBottom: '60px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '24px', color: 'var(--color-primary)' }}>NOVO STRELJIVO</h2>
+          <h2 style={{ fontSize: '24px' }}><span className="text-gradient-copper">NOVO STRELJIVO</span></h2>
           <button 
             onClick={() => onNavigate('shop?category=streljivo')} 
             style={{ 
@@ -265,22 +265,6 @@ export const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Local interactive styles */}
-      <style>{`
-        .category-card:hover img {
-          transform: scale(1.08);
-        }
-        .category-card {
-          position: relative;
-        }
-        .category-card .card-overlay {
-          background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 60%) !important;
-          transition: background 0.3s;
-        }
-        .category-card:hover .card-overlay {
-          background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 100%) !important;
-        }
-      `}</style>
 
     </div>
   );

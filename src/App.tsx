@@ -5,6 +5,7 @@ import { MobileNavbar } from './components/MobileNavbar';
 import { QuickViewModal } from './components/QuickViewModal';
 import { CookieBanner } from './components/CookieBanner';
 import { PromoPopup } from './components/PromoPopup';
+import { Toast } from './components/Toast';
 
 // Pages
 import { Home } from './pages/Home';
@@ -142,6 +143,7 @@ export const App: React.FC = () => {
       <QuickViewModal />
       <CookieBanner />
       <PromoPopup />
+      <Toast />
 
     </div>
   );
