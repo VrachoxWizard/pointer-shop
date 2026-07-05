@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
 import { Search, ShoppingBag, Heart, Menu, X, ChevronDown, User } from 'lucide-react';
-import { CATEGORIES } from '../data/products';
+import { CATEGORIES, Product } from '../data/products';
 
 interface HeaderProps {
   currentRoute: string;
@@ -9,9 +9,10 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
-  const { cart, wishlist } = useShop();
+  const { cart, wishlist, products } = useShop();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
@@ -23,6 +24,31 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
       onNavigate(`shop?search=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery('');
+      setSuggestions([]);
+    }
+  };
+
+  const handleToggleSearch = () => {
+    if (isSearchOpen) {
+      setSearchQuery('');
+      setSuggestions([]);
+    }
+    setIsSearchOpen(!isSearchOpen);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    if (value.trim().length > 1) {
+      const q = value.toLowerCase();
+      const filtered = products.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        p.brand.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q)
+      ).slice(0, 5);
+      setSuggestions(filtered);
+    } else {
+      setSuggestions([]);
     }
   };
 
@@ -208,7 +234,7 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
           <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {/* Search Toggle */}
             <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={handleToggleSearch}
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--color-primary)' }}
               title="Traži"
             >
@@ -323,13 +349,61 @@ export const Header: React.FC<HeaderProps> = ({ currentRoute, onNavigate }) => {
                 type="text" 
                 placeholder="Traži proizvode po nazivu, kalibru ili brendu..." 
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 className="input-field"
                 style={{ flexGrow: 1 }}
                 autoFocus
               />
               <button type="submit" className="btn-primary" style={{ padding: '0 24px' }}>Traži</button>
             </form>
+
+            {/* Live Search Suggestions */}
+            {suggestions.length > 0 && (
+              <div 
+                className="glassmorphism animate-scale-in"
+                style={{
+                  marginTop: '12px',
+                  borderRadius: 'var(--radius-md)',
+                  overflow: 'hidden',
+                  boxShadow: 'var(--shadow-lg)',
+                  border: '1px solid var(--color-neutral-border)',
+                  backgroundColor: 'white',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  zIndex: 100
+                }}
+              >
+                {suggestions.map(p => (
+                  <div 
+                    key={p.id}
+                    onClick={() => {
+                      onNavigate(`product/${p.id}`);
+                      setIsSearchOpen(false);
+                      setSuggestions([]);
+                      setSearchQuery('');
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      padding: '10px 16px',
+                      cursor: 'pointer',
+                      borderBottom: '1px solid var(--color-neutral-border)',
+                      transition: 'var(--transition-fast)'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-neutral-light)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'white'}
+                  >
+                    <img src={p.images[0]} alt="" style={{ width: '40px', height: '40px', objectFit: 'contain' }} />
+                    <div style={{ flexGrow: 1, textAlign: 'left' }}>
+                      <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-neutral-dark)' }}>{p.name}</div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-neutral-muted)' }}>{p.brand} | €{p.price.toFixed(2)}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
           </div>
         </div>
       )}
